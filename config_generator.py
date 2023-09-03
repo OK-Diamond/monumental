@@ -180,7 +180,9 @@ class monument:
         output  =           f"""{self.id} = {{\n"""
         output +=           f"""	start = {self.province_id}\n"""
         output +=           f"""	date = 1.01.01\n"""
-        output +=           f"""	time = {{months = 0}}\n"""
+        output +=           f"""	time = {{\n"""
+        output +=           f"""		months = 0\n"""
+        output +=           f"""	}}\n"""
         output +=           f"""	build_cost = 0\n"""
         
         if self.find_key("movable"):
@@ -227,8 +229,12 @@ class monument:
         
         
         output +=           f"""	tier_0 = {{\n"""
-        output +=           f"""		upgrade_time = {{months = 0}}\n"""
-        output +=           f"""		cost_to_upgrade = {{factor = 0}}\n"""
+        output +=           f"""		upgrade_time = {{\n"""
+        output +=           f"""			months = 0\n"""
+        output +=           f"""		}}\n"""
+        output +=           f"""		cost_to_upgrade = {{\n"""
+        output +=           f"""			factor = 0\n"""
+        output +=           f"""		}}\n"""
         output +=           f"""		province_modifiers = {{}}\n"""
         output +=           f"""		area_modifier = {{}}\n"""
         output +=           f"""		country_modifiers = {{}}\n"""
@@ -237,8 +243,12 @@ class monument:
         
         
         output +=           f"""	tier_1 = {{\n"""
-        output +=           f"""		upgrade_time = {{months = 12}}\n"""
-        output +=           f"""		cost_to_upgrade = {{factor = 100}}\n"""
+        output +=           f"""		upgrade_time = {{\n"""
+        output +=           f"""			months = 12\n"""
+        output +=           f"""		}}\n"""
+        output +=           f"""		cost_to_upgrade = {{\n"""
+        output +=           f"""			factor = 100\n"""
+        output +=           f"""		}}\n"""
         
         output +=       f"""		province_modifiers = {{\n"""
         for i in self.get_tier_data(1, "province"):
@@ -264,8 +274,12 @@ class monument:
         
         
         output +=           f"""	tier_2 = {{\n"""
-        output +=           f"""		upgrade_time = {{months = 24}}\n"""
-        output +=           f"""		cost_to_upgrade = {{factor = 250}}\n"""
+        output +=           f"""		upgrade_time = {{\n"""
+        output +=           f"""			months = 24\n"""
+        output +=           f"""		}}\n"""
+        output +=           f"""		cost_to_upgrade = {{\n"""
+        output +=           f"""			factor = 250\n"""
+        output +=           f"""		}}\n"""
         
         
         output +=       f"""		province_modifiers = {{\n"""
@@ -292,8 +306,12 @@ class monument:
         
         
         output +=           f"""	tier_3 = {{\n"""
-        output +=           f"""		upgrade_time = {{months = 48}}\n"""
-        output +=           f"""		cost_to_upgrade = {{factor = 500}}\n"""
+        output +=           f"""		upgrade_time = {{\n"""
+        output +=           f"""			months = 48\n"""
+        output +=           f"""		}}\n"""
+        output +=           f"""		cost_to_upgrade = {{\n"""
+        output +=           f"""			factor = 500\n"""
+        output +=           f"""		}}\n"""
         
         
         output +=       f"""		province_modifiers = {{\n"""
