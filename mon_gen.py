@@ -1,3 +1,4 @@
+ # Designed to be a less specialised version of the program.
 from unidecode import unidecode # pip install unidecode
 import subprograms.image_generator as img_gen
 import subprograms.spreadsheet as sheets
@@ -7,21 +8,75 @@ from os import replace, remove
 from pyttsx3 import init as tts_init # pip install pyttsx3 - For TTS
 
 class monument:
-    def __init__(self, info: list[str], mon_index: dict[str, int]) -> None:
-        self.name = info[mon_index["name"]]
-        self.id = unidecode(info[mon_index["name"]])
+    def __init__(self, info: list[str], index: dict[str, int]) -> None:
+        self.name = info[index["name"]]
+        self.id = unidecode(info[index["name"]])
         self.id = self.id.lower()
         for i in [" ", "-"]:
             self.id = self.id.replace(i, "_")
         for i in ["'", ".", "/", "/", "\"", "\'"]:
             self.id = self.id.replace(i, "")
-        self.province_id = info[mon_index["prov_id"]]
-        self.requirements = info[mon_index["requirements"]].split("\n")
-        self.unique_effects = info[mon_index["unique_effects"]].split("\n")
-        self.description = info[mon_index["description"]].replace("\n", "\\n")
-        self.suggested_by = info[mon_index["suggested_by"]]
-        if self.type == "":
-            input(f"Type not found: {info[mon_index['type']]}")
+        self.province_id = info[index["prov_id"]]
+        self.description = info[index["description"]].replace("\n", "\\n")
+        self.requirements = info[index["requirements"]].split("\n")
+        self.movable = info[index["movable"]].split("\n")
+        
+        self.t1_modifiers: dict[str, list[str]] = {}
+        self.t2_modifiers: dict[str, list[str]] = {}
+        self.t3_modifiers: dict[str, list[str]] = {}
+
+        self.t1_modifiers["province"] = info[index["tier_1"]].split("\n") # Province
+        for i in range(len(self.t1_modifiers["province"])): # Upgrade
+            if "---upgrade---" in self.t1_modifiers["province"][i]:
+                self.t1_modifiers["upgrade"] = self.t1_modifiers["province"][i+1:]
+                self.t1_modifiers["province"] = self.t1_modifiers["province"][:i]
+                break
+        for i in range(len(self.t1_modifiers["province"])): # Country
+            if "---country---" in self.t1_modifiers["province"][i]:
+                self.t1_modifiers["country"] = self.t1_modifiers["province"][i+1:]
+                self.t1_modifiers["province"] = self.t1_modifiers["province"][:i]
+                break
+        for i in range(len(self.t1_modifiers["province"])): # Area
+            if "---area---" in self.t1_modifiers["province"][i]:
+                self.t1_modifiers["area"] = self.t1_modifiers["province"][i+1:]
+                self.t1_modifiers["province"] = self.t1_modifiers["province"][:i]
+                break
+        
+        self.t2_modifiers["province"] = info[index["tier_1"]].split("\n") # Province
+        for i in range(len(self.t2_modifiers["province"])): # Upgrade
+            if "---upgrade---" in self.t2_modifiers["province"][i]:
+                self.t2_modifiers["upgrade"] = self.t2_modifiers["province"][i+1:]
+                self.t2_modifiers["province"] = self.t2_modifiers["province"][:i]
+                break
+        for i in range(len(self.t2_modifiers["province"])): # Country
+            if "---country---" in self.t2_modifiers["province"][i]:
+                self.t2_modifiers["country"] = self.t2_modifiers["province"][i+1:]
+                self.t2_modifiers["province"] = self.t2_modifiers["province"][:i]
+                break
+        for i in range(len(self.t2_modifiers["province"])): # Area
+            if "---area---" in self.t2_modifiers["province"][i]:
+                self.t2_modifiers["area"] = self.t2_modifiers["province"][i+1:]
+                self.t2_modifiers["province"] = self.t2_modifiers["province"][:i]
+                break
+        
+        self.t3_modifiers["province"] = info[index["tier_1"]].split("\n") # Province
+        for i in range(len(self.t3_modifiers["province"])): # Upgrade
+            if "---upgrade---" in self.t3_modifiers["province"][i]:
+                self.t3_modifiers["upgrade"] = self.t3_modifiers["province"][i+1:]
+                self.t3_modifiers["province"] = self.t3_modifiers["province"][:i]
+                break
+        for i in range(len(self.t3_modifiers["province"])): # Country
+            if "---country---" in self.t3_modifiers["province"][i]:
+                self.t3_modifiers["country"] = self.t3_modifiers["province"][i+1:]
+                self.t3_modifiers["province"] = self.t3_modifiers["province"][:i]
+                break
+        for i in range(len(self.t3_modifiers["province"])): # Area
+            if "---area---" in self.t3_modifiers["province"][i]:
+                self.t3_modifiers["area"] = self.t3_modifiers["province"][i+1:]
+                self.t3_modifiers["province"] = self.t3_modifiers["province"][:i]
+                break
+        
+        
         return
 
     def find_key(self, key: str) -> bool:
@@ -47,40 +102,35 @@ class monument:
     
     def get_tier_data(self, tier: int, mod_type: str) -> list[str]:
         mod_type = mod_type.lower()
-        modifier_list = []
         if tier == 1:
             if mod_type in ["prov", "province"]:
-                for i in self.type.get_t1_province_modifiers():
-                    modifier_list.append(i)
+                return self.t1_modifiers["province"]
             elif mod_type in ["area"]:
-                for i in self.type.get_t1_area_modifiers():
-                    modifier_list.append(i)
+                return self.t1_modifiers["area"]
+            elif mod_type in ["country"]:
+                return self.t1_modifiers["country"]
             elif mod_type in ["upgr", "upgrade"]:
-                for i in self.type.get_t1_on_upgrade():
-                    modifier_list.append(i)
+                return self.t1_modifiers["upgrade"]
         elif tier == 2:
             if mod_type in ["prov", "province"]:
-                for i in self.type.get_t2_province_modifiers():
-                    modifier_list.append(i)
+                return self.t2_modifiers["province"]
             elif mod_type in ["area"]:
-                for i in self.type.get_t2_area_modifiers():
-                    modifier_list.append(i)
+                return self.t2_modifiers["area"]
+            elif mod_type in ["country"]:
+                return self.t2_modifiers["country"]
             elif mod_type in ["upgr", "upgrade"]:
-                for i in self.type.get_t2_on_upgrade():
-                    modifier_list.append(i)
+                return self.t2_modifiers["upgrade"]
         elif tier == 3:
             if mod_type in ["prov", "province"]:
-                for i in self.type.get_t3_province_modifiers():
-                    modifier_list.append(i)
+                return self.t3_modifiers["province"]
             elif mod_type in ["area"]:
-                for i in self.type.get_t3_area_modifiers():
-                    modifier_list.append(i)
+                return self.t3_modifiers["area"]
+            elif mod_type in ["country"]:
+                return self.t3_modifiers["country"]
             elif mod_type in ["upgr", "upgrade"]:
-                for i in self.type.get_t3_on_upgrade():
-                    modifier_list.append(i)
+                return self.t3_modifiers["upgrade"]
         else:
-            input()
-        return modifier_list
+            raise Exception(f"get_tier_data bad input: {tier}")
 
     def build_config(self) -> str:
         output  =           f"""{self.id} = {{\n"""
@@ -277,6 +327,7 @@ def batch_copy(source_folder: str, dest_folder: str, files: str|list) -> None:
     return
 
 def main() -> None:
+     # Things to mess with:
     MOD_NAME = "post_finem" # Please avoid spaces, punctuation, special characters, etc. as they could lead to unexpected results.
     MOD_ID = "pf" # as above
     MOD_FILES_LOCATION = "mod_files"
@@ -286,10 +337,11 @@ def main() -> None:
     CREDENTIALS_LOCATION = f"subprograms/data/credentials.json"
     SHEETS_ID = ""
     IMAGE_FOLDER_ID = ""
-    IMAGE_DEST_LOCATION = "temp"
     DOTMOD_SETUP = False # Set to true if you want .mod files and thumbnail.png to be handled by the program
     
-    file_names = {
+     # Don't mess with these:
+    IMAGE_DEST_LOCATION = "temp"
+    FILE_NAMES = {
         "common": f"{MOD_ID}_monuments.txt", 
         "localisation": f"{MOD_ID}_monuments_l_english.yml", 
         "interface": f"{MOD_ID}_monuments.gfx"
@@ -303,48 +355,42 @@ def main() -> None:
     
     
     mon_list: list[monument] = []
-    range_list, mon_index = sheets.retrieve_range_with_index(SHEETS_ID, "monument_list", SCOPES, TOKEN_LOCATION, CREDENTIALS_LOCATION) # Process monuments
+    range_list, index = sheets.retrieve_range_with_index(SHEETS_ID, "monument_list", SCOPES, TOKEN_LOCATION, CREDENTIALS_LOCATION) # Process monuments
     for i in range_list[1:]:
-        mon_list.append(monument(i, mon_index))
+        mon_list.append(monument(i, index))
     for i in range(len(mon_list)-1, -1, -1): # Remove vanilla monuments
         if mon_list[i].get_type_data().get_name() == "Vanilla":
             mon_list.pop(i)
 
-    print(f"common/great_projects/{file_names['common']}")
+    print(f"common/great_projects/{FILE_NAMES['common']}")
     config = ""
     for i in mon_list:
         config += i.build_config()
-    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/common/great_projects/{file_names['common']}", config, "cp1252")
+    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/common/great_projects/{FILE_NAMES['common']}", config, "cp1252")
     
-    print(f"localisation/{file_names['localisation']}")
+    print(f"localisation/{FILE_NAMES['localisation']}")
     localisation = "l_english:\n"
     for i in range(len(mon_list)): # Remove vanilla monuments
         has_desc = not empty(mon_list[i].get_description())
-        has_credit = not empty(mon_list[i].get_suggested_by())
         localisation += f" {mon_list[i].get_id()}:0 \"{mon_list[i].get_name()}\"\n"
-        if has_desc or has_credit:
+        if has_desc:
             localisation += f" {mon_list[i].get_id()}_desc:0 \""
-            if has_desc:
-                localisation += f"--------------\\n{mon_list[i].get_description()}"
-                if has_credit:
-                    localisation += "\\n"
-            if has_credit:
-                localisation += f"--------------\\nSuggested by {mon_list[i].get_suggested_by()}"
-            localisation += "\"\n"
-    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/localisation/{file_names['localisation']}", localisation, "utf-8-sig")
+            localisation += f"--------------\\n{mon_list[i].get_description()}\"\n"
+    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/localisation/{FILE_NAMES['localisation']}", localisation, "utf-8-sig")
     
     print("gfx/interface/great_projects   image files")
     input("Press enter to continue")
-    file.delete_contents(IMAGE_DEST_LOCATION)
+    file.test_folder(IMAGE_DEST_LOCATION, False)
+    #file.delete_contents(IMAGE_DEST_LOCATION)
     drive.download_contents(IMAGE_FOLDER_ID, IMAGE_DEST_LOCATION, SCOPES, TOKEN_LOCATION, CREDENTIALS_LOCATION)
     image_file_type = "dds"
     img_gen.main(
         IMAGE_DEST_LOCATION, 
         f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects", 
-        f"{PROGRAM_LOCATION}/subprograms/data", image_file_type
+        "subprograms/data", image_file_type
     )
     
-    print(f"interface/{file_names['interface']}")
+    print(f"interface/{FILE_NAMES['interface']}")
     gfx_str = "spriteTypes = {\n"
     prov_list = []
     for i in img_gen.listdir(f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects"):
@@ -366,8 +412,8 @@ def main() -> None:
             remove(f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}")
             #print("MONUMENT REMOVED", f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}")
     gfx_str += "}"
-    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/interface/{file_names['interface']}", gfx_str)
-    file.delete_contents(IMAGE_DEST_LOCATION)
+    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/interface/{FILE_NAMES['interface']}", gfx_str)
+    file.delete(IMAGE_DEST_LOCATION)
     tts("Ding ding ding!") # TTS to grab my attention
     return
     
