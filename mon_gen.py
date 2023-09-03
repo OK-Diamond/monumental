@@ -6,110 +6,18 @@ import subprograms.drive as drive
 from os import replace, remove
 from pyttsx3 import init as tts_init # pip install pyttsx3 - For TTS
 
-class monument_type:
-    def __init__(self, info: list[str], index: dict[str, int]) -> None:
-        self.name = info[index["group"]]
-        self.t1_province_modifiers, self.t1_area_modifiers, self.t1_on_upgrade = [], [], []
-        self.t2_province_modifiers, self.t2_area_modifiers, self.t2_on_upgrade = [], [], []
-        self.t3_province_modifiers, self.t3_area_modifiers, self.t3_on_upgrade = [], [], []
-        #print()
-        #print("name", info[index["group"]])
-        #print("tier 1", info[index["tier_1"]])
-        self.t1_province_modifiers = info[index["tier_1"]].split("\n")#[1:]
-        #print("aaa", self.t1_province_modifiers)
-        for i in range(len(self.t1_province_modifiers)):
-            if "---upgrade---" in self.t1_province_modifiers[i]:
-                self.t1_on_upgrade = self.t1_province_modifiers[i+1:]
-                self.t1_province_modifiers = self.t1_province_modifiers[:i]
-                break
-        for i in range(len(self.t1_province_modifiers)):
-            if "---area---" in self.t1_province_modifiers[i]:
-                self.t1_area_modifiers = self.t1_province_modifiers[i+1:]
-                self.t1_province_modifiers = self.t1_province_modifiers[:i]
-                break
-        #print("t1_province_modifiers", self.t1_province_modifiers)
-        #print("t1_on_upgrade", self.t1_on_upgrade)
-        #print("t1_area_modifiers", self.t1_area_modifiers)
-        
-        self.t2_province_modifiers = info[index["tier_2"]].split("\n")#[1:]
-        for i in range(len(self.t2_province_modifiers)):
-            if "---upgrade---" in self.t2_province_modifiers[i]:
-                self.t2_on_upgrade = self.t2_province_modifiers[i+1:]
-                self.t2_province_modifiers = self.t2_province_modifiers[:i]
-                break
-        for i in range(len(self.t2_province_modifiers)):
-            if "---area---" in self.t2_province_modifiers[i]:
-                self.t2_area_modifiers = self.t2_province_modifiers[i+1:]
-                self.t2_province_modifiers = self.t2_province_modifiers[:i]
-                break
-        
-        self.t3_province_modifiers = info[index["tier_3"]].split("\n")#[1:]
-        for i in range(len(self.t3_province_modifiers)):
-            if "---upgrade---" in self.t3_province_modifiers[i]:
-                self.t3_on_upgrade = self.t3_province_modifiers[i+1:]
-                self.t3_province_modifiers = self.t3_province_modifiers[:i]
-                break
-        for i in range(len(self.t3_province_modifiers)):
-            if "---area---" in self.t3_province_modifiers[i]:
-                self.t3_area_modifiers = self.t3_province_modifiers[i+1:]
-                self.t3_province_modifiers = self.t3_province_modifiers[:i]
-                break
-        
-        self.requirements = info[index["requirements"]].split("\n")#[1:]
-        self.other = info[index["other"]].split("\n")#[1:]
-        self.count = info[index["count"]]
-    def get_name(self) -> str:
-        return self.name
-    def get_t1_province_modifiers(self) -> str:
-        return self.t1_province_modifiers
-    def get_t1_area_modifiers(self) -> str:
-        return self.t1_area_modifiers
-    def get_t1_on_upgrade(self) -> str:
-        return self.t1_on_upgrade
-    def get_t2_province_modifiers(self) -> str:
-        return self.t2_province_modifiers
-    def get_t2_area_modifiers(self) -> str:
-        return self.t2_area_modifiers
-    def get_t2_on_upgrade(self) -> str:
-        return self.t2_on_upgrade
-    def get_t3_province_modifiers(self) -> str:
-        return self.t3_province_modifiers
-    def get_t3_area_modifiers(self) -> str:
-        return self.t3_area_modifiers
-    def get_t3_on_upgrade(self) -> str:
-        return self.t3_on_upgrade
-    def get_requirements(self) -> str:
-        return self.requirements
-    def get_other(self) -> str:
-        return self.other
-
 class monument:
-    def __init__(self, info: list[str], mon_index: dict[str, int], type_list: list[monument_type], type_index: dict[str, int]) -> None:
-        #print("Monument", info)
+    def __init__(self, info: list[str], mon_index: dict[str, int]) -> None:
         self.name = info[mon_index["name"]]
-        #print("\nM name:", self.name)
-        #print(info[0])
         self.id = unidecode(info[mon_index["name"]])
-        #print(self.id)
         self.id = self.id.lower()
         for i in [" ", "-"]:
             self.id = self.id.replace(i, "_")
         for i in ["'", ".", "/", "/", "\"", "\'"]:
             self.id = self.id.replace(i, "")
-        #print("M id:", self.id)
         self.province_id = info[mon_index["prov_id"]]
-        #print(self.province_id, self.id)
-        #print("M province_id:", self.province_id)
-        self.type = "" #monument_type(["","","","","","",""], type_index)
-        self.requirements = info[mon_index["requirements"]].split("\n")#[1:]
-        self.unique_effects = info[mon_index["unique_effects"]].split("\n")#[1:]
-        for i in type_list:
-            if i.name == info[mon_index["type"]]:
-                self.type = i
-                for j in i.get_other():
-                    self.unique_effects.append(j)
-                for j in i.get_requirements():
-                    self.requirements.append(j)
+        self.requirements = info[mon_index["requirements"]].split("\n")
+        self.unique_effects = info[mon_index["unique_effects"]].split("\n")
         self.description = info[mon_index["description"]].replace("\n", "\\n")
         self.suggested_by = info[mon_index["suggested_by"]]
         if self.type == "":
@@ -128,8 +36,6 @@ class monument:
         return self.id
     def get_location(self) -> str:
         return self.province_id
-    def get_type_data(self) -> monument_type:
-        return self.type
     def get_description(self) -> str:
         return self.description
     def get_suggested_by(self) -> str:
@@ -371,48 +277,46 @@ def batch_copy(source_folder: str, dest_folder: str, files: str|list) -> None:
     return
 
 def main() -> None:
-    PROGRAM_LOCATION = "monumental"
-    MOD_FILES_LOCATION = f"{PROGRAM_LOCATION}/mod_files"
-    SOURCE_FILES_LOCATION = f"{PROGRAM_LOCATION}/source_files"
-    
+    MOD_NAME = "post_finem" # Please avoid spaces, punctuation, special characters, etc. as they could lead to unexpected results.
+    MOD_ID = "pf" # as above
+    MOD_FILES_LOCATION = "mod_files"
+    SOURCE_FILES_LOCATION = "source_files"
     SCOPES = ["https://www.googleapis.com/auth/drive.readonly", "https://www.googleapis.com/auth/spreadsheets.readonly"]
-    TOKEN_LOCATION = f"{PROGRAM_LOCATION}/monumental/subprograms/data/token.json"
-    CREDENTIALS_LOCATION = f"{PROGRAM_LOCATION}/monumental/subprograms/data/credentials.json"
-    SHEETS_ID = "1C1mt8cOGRljZgc5gwC9uRpVlL-XjPQ84Di4g08tNEuo"
-    IMAGE_FOLDER_ID = "1Z1m4YpNDJfXeMwQCWEuHRK1p8On-Qr09"
-    IMAGE_DEST_LOCATION = f"{PROGRAM_LOCATION}/temp"
+    TOKEN_LOCATION = f"subprograms/data/token.json"
+    CREDENTIALS_LOCATION = f"subprograms/data/credentials.json"
+    SHEETS_ID = ""
+    IMAGE_FOLDER_ID = ""
+    IMAGE_DEST_LOCATION = "temp"
+    DOTMOD_SETUP = False # Set to true if you want .mod files and thumbnail.png to be handled by the program
     
-    batch_copy(SOURCE_FILES_LOCATION, f"{MOD_FILES_LOCATION}/monumental", ["descriptor.mod", "thumbnail.png"])
+    file_names = {
+        "common": f"{MOD_ID}_monuments.txt", 
+        "localisation": f"{MOD_ID}_monuments_l_english.yml", 
+        "interface": f"{MOD_ID}_monuments.gfx"
+    }
     
-    print("monumental.mod")
-    mod_file_data = file.read(f"{SOURCE_FILES_LOCATION}/descriptor.mod", split=False)
-    mod_file_data += "\npath=\"C:/Users/Oliver Kirk/Documents/Paradox Interactive/Europa Universalis IV/mod/monumental\""
-    file.write(f"{MOD_FILES_LOCATION}/monumental.mod", mod_file_data)
+    if DOTMOD_SETUP:
+        batch_copy(SOURCE_FILES_LOCATION, f"{MOD_FILES_LOCATION}/{MOD_NAME}", ["descriptor.mod", "thumbnail.png"])
+        mod_file_data = file.read(f"{SOURCE_FILES_LOCATION}/descriptor.mod", split=False)
+        mod_file_data += f"\npath=\"C:/Users/Oliver Kirk/Documents/Paradox Interactive/Europa Universalis IV/mod/{MOD_NAME}\""
+        file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}.mod", mod_file_data)
     
-    type_list: list[monument_type] = []
-    range_list, type_index = sheets.retrieve_range_with_index(SHEETS_ID, "monument_type", SCOPES, TOKEN_LOCATION, CREDENTIALS_LOCATION) # Process monument types
-    for i in range_list[1:]:
-        type_list.append(monument_type(i, type_index))
-    
-    #print(type_index)
-    #for i in type_list:
-    #    print(i.get_name(), i.get_t1_province_modifiers())
     
     mon_list: list[monument] = []
     range_list, mon_index = sheets.retrieve_range_with_index(SHEETS_ID, "monument_list", SCOPES, TOKEN_LOCATION, CREDENTIALS_LOCATION) # Process monuments
     for i in range_list[1:]:
-        mon_list.append(monument(i, mon_index, type_list, type_index))
+        mon_list.append(monument(i, mon_index))
     for i in range(len(mon_list)-1, -1, -1): # Remove vanilla monuments
         if mon_list[i].get_type_data().get_name() == "Vanilla":
             mon_list.pop(i)
 
-    print("common/great_projects/monumental_monuments.txt")
+    print(f"common/great_projects/{file_names['common']}")
     config = ""
     for i in mon_list:
         config += i.build_config()
-    file.write(f"{MOD_FILES_LOCATION}/monumental/common/great_projects/monumental_monuments.txt", config, "cp1252")
+    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/common/great_projects/{file_names['common']}", config, "cp1252")
     
-    print("localisation/monumental_l_english.yml")
+    print(f"localisation/{file_names['localisation']}")
     localisation = "l_english:\n"
     for i in range(len(mon_list)): # Remove vanilla monuments
         has_desc = not empty(mon_list[i].get_description())
@@ -427,39 +331,44 @@ def main() -> None:
             if has_credit:
                 localisation += f"--------------\\nSuggested by {mon_list[i].get_suggested_by()}"
             localisation += "\"\n"
-    file.write(f"{MOD_FILES_LOCATION}/monumental/localisation/monumental_l_english.yml", localisation, "utf-8-sig")
+    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/localisation/{file_names['localisation']}", localisation, "utf-8-sig")
     
     print("gfx/interface/great_projects   image files")
-    #input("Press enter to continue")
+    input("Press enter to continue")
     file.delete_contents(IMAGE_DEST_LOCATION)
     drive.download_contents(IMAGE_FOLDER_ID, IMAGE_DEST_LOCATION, SCOPES, TOKEN_LOCATION, CREDENTIALS_LOCATION)
     image_file_type = "dds"
-    img_gen.main(IMAGE_DEST_LOCATION, f"{MOD_FILES_LOCATION}/monumental/gfx/interface/great_projects", f"{PROGRAM_LOCATION}/subprograms/data", image_file_type)
+    img_gen.main(
+        IMAGE_DEST_LOCATION, 
+        f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects", 
+        f"{PROGRAM_LOCATION}/subprograms/data", image_file_type
+    )
     
-    print("interface/monumental_great_project.gfx")
+    print(f"interface/{file_names['interface']}")
     gfx_str = "spriteTypes = {\n"
     prov_list = []
-    for i in img_gen.listdir(f"{MOD_FILES_LOCATION}/monumental/gfx/interface/great_projects"):
+    for i in img_gen.listdir(f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects"):
         prov_list.append(i)
         prov_id = i.split(".")[0]
         found_monument = False
         for j in mon_list:
             if j.get_location() == prov_id:
                 found_monument = True
-                replace(f"{MOD_FILES_LOCATION}/monumental/gfx/interface/great_projects/{i}", f"{MOD_FILES_LOCATION}/monumental/gfx/interface/great_projects/great_project_{j.get_id()}.{image_file_type}")
+                replace(
+                    f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}", 
+                    f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/great_project_{j.get_id()}.{image_file_type}"
+                )
                 gfx_str += f"""	spriteType = {{\n"""
                 gfx_str += f"""		name = "GFX_great_project_{j.get_id()}"\n"""
                 gfx_str += f"""		texturefile = "gfx//interface//great_projects//great_project_{j.get_id()}.{image_file_type}"\n"""
                 gfx_str += f"""	}}\n"""
         if not found_monument and i[0] in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]: # Second part is to prevent already valid images from being removed.
-            remove(f"{MOD_FILES_LOCATION}/monumental/gfx/interface/great_projects/{i}")
-            #print("MONUMENT REMOVED", f"{MOD_FILES_LOCATION}/monumental/gfx/interface/great_projects/{i}")
+            remove(f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}")
+            #print("MONUMENT REMOVED", f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}")
     gfx_str += "}"
-    file.write(f"{MOD_FILES_LOCATION}/monumental/interface/monumental_great_project.gfx", gfx_str)
+    file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/interface/{file_names['interface']}", gfx_str)
     file.delete_contents(IMAGE_DEST_LOCATION)
-    
-    tts("Ding ding ding!") # TTS to grab my attention:
-    
+    tts("Ding ding ding!") # TTS to grab my attention
     return
     
 if __name__ == "__main__":
