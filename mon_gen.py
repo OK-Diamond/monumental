@@ -5,25 +5,28 @@ import subprograms.spreadsheet as sheets
 import subprograms.file_edit as file
 import subprograms.drive as drive
 from os import replace, remove
-from pyttsx3 import init as tts_init # pip install pyttsx3 - For TTS
 
 class monument:
     def __init__(self, info: list[str], index: dict[str, int]) -> None:
         self.name = info[index["name"]]
-        self.id = unidecode(info[index["name"]])
-        self.id = self.id.lower()
+        self.id = unidecode(info[index["name"]]).lower()
         for i in [" ", "-"]:
             self.id = self.id.replace(i, "_")
-        for i in ["'", ".", "/", "/", "\"", "\'"]:
+        for i in ["'", ".", "/", "\\", "\"", "\'"]:
             self.id = self.id.replace(i, "")
         self.province_id = info[index["prov_id"]]
         self.description = info[index["description"]].replace("\n", "\\n")
         self.requirements = info[index["requirements"]].split("\n")
-        self.movable = info[index["movable"]].split("\n")
+        self.starting_tier = info[index["starting_tier"]]
         
-        self.t1_modifiers: dict[str, list[str]] = {}
-        self.t2_modifiers: dict[str, list[str]] = {}
-        self.t3_modifiers: dict[str, list[str]] = {}
+        if info[index["movable"]].lower() in ["yes", "no"]:
+            self.movable = info[index["movable"]].lower()
+        else:
+            self.movable = "no"
+        
+        self.t1_modifiers: dict[str, list[str]] = {"province": [], "area": [], "country": [], "upgrade": []}
+        self.t2_modifiers: dict[str, list[str]] = {"province": [], "area": [], "country": [], "upgrade": []}
+        self.t3_modifiers: dict[str, list[str]] = {"province": [], "area": [], "country": [], "upgrade": []}
 
         self.t1_modifiers["province"] = info[index["tier_1"]].split("\n") # Province
         for i in range(len(self.t1_modifiers["province"])): # Upgrade
@@ -79,11 +82,6 @@ class monument:
         
         return
 
-    def find_key(self, key: str) -> bool:
-        if key in self.unique_effects:
-            return True
-        else:
-            return False
     
     def get_name(self) -> str:
         return self.name
@@ -140,23 +138,9 @@ class monument:
         output +=           f"""		months = 0\n"""
         output +=           f"""	}}\n"""
         output +=           f"""	build_cost = 0\n"""
-        
-        if self.find_key("movable"):
-            output +=       f"""	can_be_moved = yes\n"""
-        else:
-            output +=       f"""	can_be_moved = no\n"""
-        
+        output +=       f"""	can_be_moved = {self.movable}\n"""
         output +=           f"""	move_days_per_unit_distance = 10\n"""
-        
-        if self.find_key("starts at tier 1"):
-            output +=       f"""	starting_tier = 1\n"""
-        elif self.find_key("starts at tier 2"):
-            output +=       f"""	starting_tier = 2\n"""
-        elif self.find_key("starts at tier 3"):
-            output +=       f"""	starting_tier = 3\n"""
-        else:
-            output +=       f"""	starting_tier = 0\n"""
-        
+        output +=       f"""	starting_tier = {self.starting_tier}\n"""        
         output +=           f"""	type = monument\n"""
         
         
@@ -218,7 +202,11 @@ class monument:
                 output +=   f"""			{i}\n"""
         output +=       f"""		}}\n"""
 
-        output +=           f"""		country_modifiers = {{}}\n"""
+        output +=       f"""		country_modifiers = {{\n"""
+        for i in self.get_tier_data(1, "country"):
+            if not empty(i):
+                output +=   f"""			{i}\n"""
+        output +=       f"""		}}\n"""
         
         output +=       f"""		on_upgraded = {{\n"""
         for i in self.get_tier_data(1, "upgrade"):
@@ -250,7 +238,11 @@ class monument:
                 output +=   f"""			{i}\n"""
         output +=       f"""		}}\n"""
 
-        output +=           f"""		country_modifiers = {{}}\n"""
+        output +=       f"""		country_modifiers = {{\n"""
+        for i in self.get_tier_data(2, "country"):
+            if not empty(i):
+                output +=   f"""			{i}\n"""
+        output +=       f"""		}}\n"""
         
         output +=       f"""		on_upgraded = {{\n"""
         for i in self.get_tier_data(2, "upgrade"):
@@ -282,7 +274,11 @@ class monument:
                 output +=   f"""			{i}\n"""
         output +=       f"""		}}\n"""
 
-        output +=           f"""		country_modifiers = {{}}\n"""
+        output +=       f"""		country_modifiers = {{\n"""
+        for i in self.get_tier_data(3, "country"):
+            if not empty(i):
+                output +=   f"""			{i}\n"""
+        output +=       f"""		}}\n"""
         
         output +=       f"""		on_upgraded = {{\n"""
         for i in self.get_tier_data(3, "upgrade"):
@@ -308,16 +304,6 @@ def empty(a: str|list) -> bool:
             return True
     return len(a) == 0 or a in ["-", "0", " ", "."]
 
-def tts(text: str) -> None:
-    engine = tts_init()
-    engine.setProperty('rate', 125)
-    engine.setProperty('volume', 1.0)
-    engine.setProperty('voice', engine.getProperty('voices')[1].id)
-    engine.say(text)
-    engine.runAndWait()
-    engine.stop()
-    return
-
 def batch_copy(source_folder: str, dest_folder: str, files: str|list) -> None:
     if type(files) == str:
         files = [files]
@@ -335,10 +321,9 @@ def main() -> None:
     SCOPES = ["https://www.googleapis.com/auth/drive.readonly", "https://www.googleapis.com/auth/spreadsheets.readonly"]
     TOKEN_LOCATION = f"subprograms/data/token.json"
     CREDENTIALS_LOCATION = f"subprograms/data/credentials.json"
-    SHEETS_ID = ""
-    IMAGE_FOLDER_ID = ""
-    DOTMOD_SETUP = False # Set to true if you want .mod files and thumbnail.png to be handled by the program
-    
+    SHEETS_ID = "1jEof6L1EutUBgaS1NVqQaAPMekN0I3ogTC1ygvQTuiM"
+    IMAGE_FOLDER_ID = "15xGaE1d6v9yxBXo8Fl1haA2f1MY-ttIE"
+
      # Don't mess with these:
     IMAGE_DEST_LOCATION = "temp"
     FILE_NAMES = {
@@ -347,20 +332,10 @@ def main() -> None:
         "interface": f"{MOD_ID}_monuments.gfx"
     }
     
-    if DOTMOD_SETUP:
-        batch_copy(SOURCE_FILES_LOCATION, f"{MOD_FILES_LOCATION}/{MOD_NAME}", ["descriptor.mod", "thumbnail.png"])
-        mod_file_data = file.read(f"{SOURCE_FILES_LOCATION}/descriptor.mod", split=False)
-        mod_file_data += f"\npath=\"C:/Users/Oliver Kirk/Documents/Paradox Interactive/Europa Universalis IV/mod/{MOD_NAME}\""
-        file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}.mod", mod_file_data)
-    
-    
     mon_list: list[monument] = []
     range_list, index = sheets.retrieve_range_with_index(SHEETS_ID, "monument_list", SCOPES, TOKEN_LOCATION, CREDENTIALS_LOCATION) # Process monuments
     for i in range_list[1:]:
         mon_list.append(monument(i, index))
-    for i in range(len(mon_list)-1, -1, -1): # Remove vanilla monuments
-        if mon_list[i].get_type_data().get_name() == "Vanilla":
-            mon_list.pop(i)
 
     print(f"common/great_projects/{FILE_NAMES['common']}")
     config = ""
@@ -414,7 +389,6 @@ def main() -> None:
     gfx_str += "}"
     file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/interface/{FILE_NAMES['interface']}", gfx_str)
     file.delete(IMAGE_DEST_LOCATION)
-    tts("Ding ding ding!") # TTS to grab my attention
     return
     
 if __name__ == "__main__":
