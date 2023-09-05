@@ -32,10 +32,10 @@ minos_dungeons = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -45,13 +45,15 @@ minos_dungeons = {
 		}
 		on_upgraded = {
 		}
+		conditional_modifier = {
+		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 			local_governing_cost = -0.1
@@ -67,13 +69,32 @@ minos_dungeons = {
 			    add_prestige = 5
 			}
 		}
+		conditional_modifier = {
+			trigger = {
+			    owner = { 
+			        OR = { 
+			            tag = FRA 
+			            was_tag = FRA
+			            overlord = {
+			                OR = { 
+			                    tag = FRA
+			                    was_tag = FRA
+			                }
+			            }
+			        }
+			    }
+			}
+			modifier = {
+			    max_absolutism = 5
+			}
+		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -82,6 +103,8 @@ minos_dungeons = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -119,10 +142,10 @@ seat_of_the_archon = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -131,14 +154,16 @@ seat_of_the_archon = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -147,14 +172,16 @@ seat_of_the_archon = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -163,6 +190,8 @@ seat_of_the_archon = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -200,10 +229,10 @@ mon3 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -212,14 +241,16 @@ mon3 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -228,14 +259,16 @@ mon3 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -244,6 +277,8 @@ mon3 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -281,10 +316,10 @@ mon4 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -293,14 +328,16 @@ mon4 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -309,14 +346,16 @@ mon4 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -326,9 +365,11 @@ mon4 = {
 		}
 		on_upgraded = {
 		}
+		conditional_modifier = {
+		}
 	}
 }
-mon5 = {
+lingonian_military_academy = {
 	start = 183
 	date = 1.01.01
 	time = {
@@ -340,12 +381,24 @@ mon5 = {
 	starting_tier = 0
 	type = monument
 	build_trigger = {
+		AND = {
+		    culture = lingonian
+		    province_is_or_accepts_culture = yes
+		}
 	}
 	on_built = {}
 	on_destroyed = {}
 	can_use_modifiers_trigger = {
+		AND = {
+		    culture = lingonian
+		    province_is_or_accepts_culture = yes
+		}
 	}
 	can_upgrade_trigger = {
+		AND = {
+		    culture = lingonian
+		    province_is_or_accepts_culture = yes
+		}
 	}
 	keep_trigger = {}
 	tier_0 = {
@@ -362,10 +415,10 @@ mon5 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -374,14 +427,16 @@ mon5 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -390,14 +445,16 @@ mon5 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -407,9 +464,11 @@ mon5 = {
 		}
 		on_upgraded = {
 		}
+		conditional_modifier = {
+		}
 	}
 }
-mon6 = {
+historic_centre_of_carthage = {
 	start = 341
 	date = 1.01.01
 	time = {
@@ -443,10 +502,10 @@ mon6 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -455,14 +514,16 @@ mon6 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -471,14 +532,16 @@ mon6 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -488,10 +551,12 @@ mon6 = {
 		}
 		on_upgraded = {
 		}
+		conditional_modifier = {
+		}
 	}
 }
 mon7 = {
-	start = 294
+	start = 4255
 	date = 1.01.01
 	time = {
 		months = 0
@@ -524,10 +589,10 @@ mon7 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -536,14 +601,16 @@ mon7 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -552,14 +619,16 @@ mon7 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -568,6 +637,8 @@ mon7 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -605,10 +676,10 @@ uppsala_temple = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -617,14 +688,16 @@ uppsala_temple = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -633,14 +706,16 @@ uppsala_temple = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -649,6 +724,8 @@ uppsala_temple = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -686,10 +763,10 @@ althing_general_assembly = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -698,14 +775,16 @@ althing_general_assembly = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -714,14 +793,16 @@ althing_general_assembly = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -730,6 +811,8 @@ althing_general_assembly = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -767,10 +850,10 @@ mon10 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -779,14 +862,16 @@ mon10 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -795,14 +880,16 @@ mon10 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -811,11 +898,13 @@ mon10 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
 temple_of_barcino = {
-	start = 2988
+	start = 213
 	date = 1.01.01
 	time = {
 		months = 0
@@ -848,10 +937,10 @@ temple_of_barcino = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -860,14 +949,16 @@ temple_of_barcino = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -876,14 +967,16 @@ temple_of_barcino = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -892,11 +985,13 @@ temple_of_barcino = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
 carthaginian_aqueducts_of_gadir = {
-	start = 2754
+	start = 214
 	date = 1.01.01
 	time = {
 		months = 0
@@ -929,10 +1024,10 @@ carthaginian_aqueducts_of_gadir = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -941,14 +1036,16 @@ carthaginian_aqueducts_of_gadir = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -957,14 +1054,16 @@ carthaginian_aqueducts_of_gadir = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -973,11 +1072,13 @@ carthaginian_aqueducts_of_gadir = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
 the_looms_of_tol_tzaphon = {
-	start = 216
+	start = 219
 	date = 1.01.01
 	time = {
 		months = 0
@@ -1010,10 +1111,10 @@ the_looms_of_tol_tzaphon = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -1022,14 +1123,16 @@ the_looms_of_tol_tzaphon = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -1038,14 +1141,16 @@ the_looms_of_tol_tzaphon = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -1054,6 +1159,8 @@ the_looms_of_tol_tzaphon = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -1091,10 +1198,10 @@ mon14 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -1103,14 +1210,16 @@ mon14 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -1119,14 +1228,16 @@ mon14 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -1135,6 +1246,8 @@ mon14 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -1172,10 +1285,10 @@ mon15 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -1184,14 +1297,16 @@ mon15 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -1200,14 +1315,16 @@ mon15 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -1216,6 +1333,8 @@ mon15 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -1253,10 +1372,10 @@ mon16 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -1265,14 +1384,16 @@ mon16 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -1281,14 +1402,16 @@ mon16 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -1297,6 +1420,8 @@ mon16 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -1334,10 +1459,10 @@ mon17 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -1346,14 +1471,16 @@ mon17 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -1362,14 +1489,16 @@ mon17 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -1378,6 +1507,8 @@ mon17 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -1415,10 +1546,10 @@ mon18 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -1427,14 +1558,16 @@ mon18 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -1443,14 +1576,16 @@ mon18 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -1459,6 +1594,8 @@ mon18 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
@@ -1496,10 +1633,10 @@ mon19 = {
 	}
 	tier_1 = {
 		upgrade_time = {
-			months = 12
+			months = 120
 		}
 		cost_to_upgrade = {
-			factor = 100
+			factor = 1000
 		}
 		province_modifiers = {
 		}
@@ -1508,14 +1645,16 @@ mon19 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_2 = {
 		upgrade_time = {
-			months = 24
+			months = 240
 		}
 		cost_to_upgrade = {
-			factor = 250
+			factor = 2500
 		}
 		province_modifiers = {
 		}
@@ -1524,14 +1663,16 @@ mon19 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 	tier_3 = {
 		upgrade_time = {
-			months = 48
+			months = 480
 		}
 		cost_to_upgrade = {
-			factor = 500
+			factor = 5000
 		}
 		province_modifiers = {
 		}
@@ -1540,6 +1681,8 @@ mon19 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
+		}
+		conditional_modifier = {
 		}
 	}
 }
