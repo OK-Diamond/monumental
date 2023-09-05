@@ -8,12 +8,14 @@ from os import replace, remove
 
 class monument:
     def __init__(self, info: list[str], index: dict[str, int]) -> None:
+        print("info", info)
         self.name = info[index["name"]]
         self.id = unidecode(info[index["name"]]).lower()
         for i in [" ", "-"]:
             self.id = self.id.replace(i, "_")
         for i in ["'", ".", "/", "\\", "\"", "\'"]:
             self.id = self.id.replace(i, "")
+        print(self.name, self.id)
         self.province_id = info[index["prov_id"]]
         self.description = info[index["description"]].replace("\n", "\\n")
         self.requirements = info[index["requirements"]].split("\n")
@@ -45,7 +47,7 @@ class monument:
                 self.t1_modifiers["province"] = self.t1_modifiers["province"][:i]
                 break
         
-        self.t2_modifiers["province"] = info[index["tier_1"]].split("\n") # Province
+        self.t2_modifiers["province"] = info[index["tier_2"]].split("\n") # Province
         for i in range(len(self.t2_modifiers["province"])): # Upgrade
             if "---upgrade---" in self.t2_modifiers["province"][i]:
                 self.t2_modifiers["upgrade"] = self.t2_modifiers["province"][i+1:]
@@ -61,8 +63,9 @@ class monument:
                 self.t2_modifiers["area"] = self.t2_modifiers["province"][i+1:]
                 self.t2_modifiers["province"] = self.t2_modifiers["province"][:i]
                 break
+        print("t2", self.t2_modifiers)
         
-        self.t3_modifiers["province"] = info[index["tier_1"]].split("\n") # Province
+        self.t3_modifiers["province"] = info[index["tier_3"]].split("\n") # Province
         for i in range(len(self.t3_modifiers["province"])): # Upgrade
             if "---upgrade---" in self.t3_modifiers["province"][i]:
                 self.t3_modifiers["upgrade"] = self.t3_modifiers["province"][i+1:]
