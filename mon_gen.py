@@ -17,8 +17,8 @@ class monument:
             self.id = self.id.replace(i, "")
         print(self.name, self.id)
         self.province_id = info[index["prov_id"]]
-        self.description = info[index["description"]].replace("\n", "\\n")
-        self.artist = info[index["artist"]]
+        self.description = info[index["description"]].replace("\n", "\\n").replace("\"", "\\\"")
+        self.artist = info[index["artist"]].replace("\n", "\\n").replace("\"", "\\\"")
         self.requirements = info[index["requirements"]].split("\n")
         self.starting_tier = info[index["starting_tier"]]
         
@@ -28,14 +28,19 @@ class monument:
             self.movable = "no"
         
         self.modifiers: dict[str, dict[str, list[str]]] = {
-            1: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": []}, 
-            2: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": []}, 
-            3: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": []}
+            1: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": [], "other": []}, 
+            2: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": [], "other": []}, 
+            3: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": [], "other": []}
         }
         for [tier, data] in [[1, info[index["tier_1"]]], [2, info[index["tier_2"]]], [3, info[index["tier_3"]]]]:
-            tier:int
+            tier: int
             data: str
             self.modifiers[tier]["province"] = data.split("\n")
+            for i in range(len(self.modifiers[tier]["province"])): # Other - can be used for anything
+                if "---other---" in self.modifiers[tier]["province"][i]:
+                    self.modifiers[tier]["other"] = self.modifiers[tier]["province"][i+1:]
+                    self.modifiers[tier]["province"] = self.modifiers[tier]["province"][:i]
+                    break
             for i in range(len(self.modifiers[tier]["province"])): # Conditional Modifier
                 if "---conditional---" in self.modifiers[tier]["province"][i]:
                     self.modifiers[tier]["conditional"] = self.modifiers[tier]["province"][i+1:]
@@ -257,10 +262,14 @@ class monument:
                 ["conditional", "conditional_modifier"]
             ]:
                 output +=       f"""		{modifier} = {{\n"""
-                for i in self.get_tier_data(tier, category):
-                    if not empty(i):
-                        output +=   f"""			{i}\n"""
+                for row in self.get_tier_data(tier, category):
+                    if not empty(row):
+                        output +=   f"""			{row}\n"""
                 output +=       f"""		}}\n"""
+                
+            for row in self.get_tier_data(tier, "other"):
+                    if not empty(row):
+                        output +=   f"""		{row}\n"""
                 
             output +=           f"""	}}\n"""
         
@@ -394,12 +403,18 @@ def main() -> None:
     print(f"localisation/{FILE_NAMES['localisation']}")
     localisation = "l_english:\n"
     for i in range(len(mon_list)): # Remove vanilla monuments
-        has_desc = not empty(mon_list[i].get_description()) or not empty(mon_list[i].get_artist())
+        has_desc = not empty(mon_list[i].get_description()) 
+        has_artist = not empty(mon_list[i].get_artist())
         localisation += f" {mon_list[i].get_id()}:0 \"{mon_list[i].get_name()}\"\n"
-        if has_desc:
+        if has_desc or has_artist:
             localisation += f" {mon_list[i].get_id()}_desc:0 \""
-            localisation += f"--------------\\n{mon_list[i].get_description()}\"\n"
-            localisation += f"--------------\\n{mon_list[i].get_artist()}\"\n"
+            if has_desc:
+                localisation += f"--------------\\n{mon_list[i].get_description()}"
+                if has_artist:
+                    localisation += "\\n"
+            if has_artist:
+                localisation += f"--------------\\nArt by {mon_list[i].get_artist()}"
+            localisation += "\"\n"
     file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/localisation/{FILE_NAMES['localisation']}", localisation, "utf-8-sig")
     
     print("gfx/interface/great_projects   image files")
