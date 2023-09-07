@@ -28,9 +28,9 @@ class monument:
             self.movable = "no"
         
         self.modifiers: dict[str, dict[str, list[str]]] = {
-            1: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": [], "other": []}, 
-            2: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": [], "other": []}, 
-            3: {"province": [], "area": [], "country": [], "upgrade": [], "conditional": [], "other": []}
+            1: {"province": [], "area": [], "region": [], "country": [], "upgrade": [], "conditional": [], "other": []}, 
+            2: {"province": [], "area": [], "region": [], "country": [], "upgrade": [], "conditional": [], "other": []}, 
+            3: {"province": [], "area": [], "region": [], "country": [], "upgrade": [], "conditional": [], "other": []}
         }
         for [tier, data] in [[1, info[index["tier_1"]]], [2, info[index["tier_2"]]], [3, info[index["tier_3"]]]]:
             tier: int
@@ -56,84 +56,16 @@ class monument:
                     self.modifiers[tier]["country"] = self.modifiers[tier]["province"][i+1:]
                     self.modifiers[tier]["province"] = self.modifiers[tier]["province"][:i]
                     break
+            for i in range(len(self.modifiers[tier]["province"])): # Region
+                if "---region---" in self.modifiers[tier]["province"][i]:
+                    self.modifiers[tier]["region"] = self.modifiers[tier]["province"][i+1:]
+                    self.modifiers[tier]["province"] = self.modifiers[tier]["province"][:i]
+                    break
             for i in range(len(self.modifiers[tier]["province"])): # Area
                 if "---area---" in self.modifiers[tier]["province"][i]:
                     self.modifiers[tier]["area"] = self.modifiers[tier]["province"][i+1:]
                     self.modifiers[tier]["province"] = self.modifiers[tier]["province"][:i]
                     break
-        
-        
-        '''self.t1_modifiers: dict[str, list[str]] = {"province": [], "area": [], "country": [], "upgrade": [], "conditional": []}
-        self.t2_modifiers: dict[str, list[str]] = {"province": [], "area": [], "country": [], "upgrade": [], "conditional": []}
-        self.t3_modifiers: dict[str, list[str]] = {"province": [], "area": [], "country": [], "upgrade": [], "conditional": []}
-        
-        self.t1_modifiers["province"] = info[index["tier_1"]].split("\n") # Province
-        for i in range(len(self.t1_modifiers["province"])): # Conditional Modifier
-            if "---conditional---" in self.t1_modifiers["province"][i]:
-                self.t1_modifiers["conditional"] = self.t1_modifiers["province"][i+1:]
-                self.t1_modifiers["province"] = self.t1_modifiers["province"][:i]
-                break
-        for i in range(len(self.t1_modifiers["province"])): # Upgrade
-            if "---upgrade---" in self.t1_modifiers["province"][i]:
-                self.t1_modifiers["upgrade"] = self.t1_modifiers["province"][i+1:]
-                self.t1_modifiers["province"] = self.t1_modifiers["province"][:i]
-                break
-        for i in range(len(self.t1_modifiers["province"])): # Country
-            if "---country---" in self.t1_modifiers["province"][i]:
-                self.t1_modifiers["country"] = self.t1_modifiers["province"][i+1:]
-                self.t1_modifiers["province"] = self.t1_modifiers["province"][:i]
-                break
-        for i in range(len(self.t1_modifiers["province"])): # Area
-            if "---area---" in self.t1_modifiers["province"][i]:
-                self.t1_modifiers["area"] = self.t1_modifiers["province"][i+1:]
-                self.t1_modifiers["province"] = self.t1_modifiers["province"][:i]
-                break
-        
-        self.t2_modifiers["province"] = info[index["tier_2"]].split("\n") # Province
-        for i in range(len(self.t2_modifiers["province"])): # Conditional Modifier
-            if "---conditional---" in self.t2_modifiers["province"][i]:
-                self.t2_modifiers["conditional"] = self.t2_modifiers["province"][i+1:]
-                self.t2_modifiers["province"] = self.t2_modifiers["province"][:i]
-                break
-        for i in range(len(self.t2_modifiers["province"])): # Upgrade
-            if "---upgrade---" in self.t2_modifiers["province"][i]:
-                self.t2_modifiers["upgrade"] = self.t2_modifiers["province"][i+1:]
-                self.t2_modifiers["province"] = self.t2_modifiers["province"][:i]
-                break
-        for i in range(len(self.t2_modifiers["province"])): # Country
-            if "---country---" in self.t2_modifiers["province"][i]:
-                self.t2_modifiers["country"] = self.t2_modifiers["province"][i+1:]
-                self.t2_modifiers["province"] = self.t2_modifiers["province"][:i]
-                break
-        for i in range(len(self.t2_modifiers["province"])): # Area
-            if "---area---" in self.t2_modifiers["province"][i]:
-                self.t2_modifiers["area"] = self.t2_modifiers["province"][i+1:]
-                self.t2_modifiers["province"] = self.t2_modifiers["province"][:i]
-                break
-        print("t2", self.t2_modifiers)
-        
-        self.t3_modifiers["province"] = info[index["tier_3"]].split("\n") # Province
-        for i in range(len(self.t3_modifiers["province"])): # Conditional Modifier
-            if "---conditional---" in self.t3_modifiers["province"][i]:
-                self.t3_modifiers["conditional"] = self.t3_modifiers["province"][i+1:]
-                self.t3_modifiers["province"] = self.t3_modifiers["province"][:i]
-                break
-        for i in range(len(self.t3_modifiers["province"])): # Upgrade
-            if "---upgrade---" in self.t3_modifiers["province"][i]:
-                self.t3_modifiers["upgrade"] = self.t3_modifiers["province"][i+1:]
-                self.t3_modifiers["province"] = self.t3_modifiers["province"][:i]
-                break
-        for i in range(len(self.t3_modifiers["province"])): # Country
-            if "---country---" in self.t3_modifiers["province"][i]:
-                self.t3_modifiers["country"] = self.t3_modifiers["province"][i+1:]
-                self.t3_modifiers["province"] = self.t3_modifiers["province"][:i]
-                break
-        for i in range(len(self.t3_modifiers["province"])): # Area
-            if "---area---" in self.t3_modifiers["province"][i]:
-                self.t3_modifiers["area"] = self.t3_modifiers["province"][i+1:]
-                self.t3_modifiers["province"] = self.t3_modifiers["province"][:i]
-                break'''
-        
         
         '''# Test modifiers:
         print("modifiers:")
@@ -163,36 +95,6 @@ class monument:
         mod_type = mod_type.lower()
         return self.modifiers[tier][mod_type]
 
-         # Old code - missing conditional
-        '''if tier == 1:
-            if mod_type in ["prov", "province"]:
-                return self.t1_modifiers["province"]
-            elif mod_type in ["area"]:
-                return self.t1_modifiers["area"]
-            elif mod_type in ["country"]:
-                return self.t1_modifiers["country"]
-            elif mod_type in ["upgr", "upgrade"]:
-                return self.t1_modifiers["upgrade"]
-        elif tier == 2:
-            if mod_type in ["prov", "province"]:
-                return self.t2_modifiers["province"]
-            elif mod_type in ["area"]:
-                return self.t2_modifiers["area"]
-            elif mod_type in ["country"]:
-                return self.t2_modifiers["country"]
-            elif mod_type in ["upgr", "upgrade"]:
-                return self.t2_modifiers["upgrade"]
-        elif tier == 3:
-            if mod_type in ["prov", "province"]:
-                return self.t3_modifiers["province"]
-            elif mod_type in ["area"]:
-                return self.t3_modifiers["area"]
-            elif mod_type in ["country"]:
-                return self.t3_modifiers["country"]
-            elif mod_type in ["upgr", "upgrade"]:
-                return self.t3_modifiers["upgrade"]
-        else:
-            raise Exception(f"get_tier_data bad input: {tier}")'''
 
     def build_config(self) -> str:
         output  =           f"""{self.id} = {{\n"""
@@ -255,10 +157,11 @@ class monument:
             output +=           f"""		}}\n"""
             
             for [category, modifier] in [
-                ["province", "province_modifiers"], 
-                ["area", "area_modifier"], 
-                ["country", "country_modifiers"], 
-                ["upgrade", "on_upgraded"], 
+                ["province",    "province_modifiers"  ], 
+                ["area",        "area_modifier"       ], 
+                ["region",      "region_modifier"     ], 
+                ["country",     "country_modifiers"   ], 
+                ["upgrade",     "on_upgraded"         ], 
                 ["conditional", "conditional_modifier"]
             ]:
                 output +=       f"""		{modifier} = {{\n"""
@@ -272,79 +175,7 @@ class monument:
                         output +=   f"""		{row}\n"""
                 
             output +=           f"""	}}\n"""
-        
-        
-        '''output +=           f"""	tier_2 = {{\n"""
-        output +=           f"""		upgrade_time = {{\n"""
-        output +=           f"""			months = 24\n"""
-        output +=           f"""		}}\n"""
-        output +=           f"""		cost_to_upgrade = {{\n"""
-        output +=           f"""			factor = 250\n"""
-        output +=           f"""		}}\n"""
-        
-        
-        output +=       f"""		province_modifiers = {{\n"""
-        for i in self.get_tier_data(2, "province"):
-            if not empty(i):
-                output +=   f"""			{i}\n"""
-        output +=       f"""		}}\n"""
-        
-        output +=       f"""		area_modifier = {{\n"""
-        for i in self.get_tier_data(2, "area"):
-            if not empty(i):
-                output +=   f"""			{i}\n"""
-        output +=       f"""		}}\n"""
-
-        output +=       f"""		country_modifiers = {{\n"""
-        for i in self.get_tier_data(2, "country"):
-            if not empty(i):
-                output +=   f"""			{i}\n"""
-        output +=       f"""		}}\n"""
-        
-        output +=       f"""		on_upgraded = {{\n"""
-        for i in self.get_tier_data(2, "upgrade"):
-            if not empty(i):
-                output +=   f"""			{i}\n"""
-        output +=       f"""		}}\n"""
-        
-        output +=           f"""	}}\n"""
-        
-        
-        output +=           f"""	tier_3 = {{\n"""
-        output +=           f"""		upgrade_time = {{\n"""
-        output +=           f"""			months = 48\n"""
-        output +=           f"""		}}\n"""
-        output +=           f"""		cost_to_upgrade = {{\n"""
-        output +=           f"""			factor = 500\n"""
-        output +=           f"""		}}\n"""
-        
-        
-        output +=       f"""		province_modifiers = {{\n"""
-        for i in self.get_tier_data(3, "province"):
-            if not empty(i):
-                output +=   f"""			{i}\n"""
-        output +=       f"""		}}\n"""
-        
-        output +=       f"""		area_modifier = {{\n"""
-        for i in self.get_tier_data(3, "area"):
-            if not empty(i):
-                output +=   f"""			{i}\n"""
-        output +=       f"""		}}\n"""
-
-        output +=       f"""		country_modifiers = {{\n"""
-        for i in self.get_tier_data(3, "country"):
-            if not empty(i):
-                output +=   f"""			{i}\n"""
-        output +=       f"""		}}\n"""
-        
-        output +=       f"""		on_upgraded = {{\n"""
-        for i in self.get_tier_data(3, "upgrade"):
-            if not empty(i):
-                output +=   f"""			{i}\n"""
-        output +=       f"""		}}\n"""
-        
-        output +=           f"""	}}\n"""'''
-        
+                
         output +=           f"""}}\n"""
         return output
 
