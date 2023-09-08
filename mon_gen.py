@@ -35,7 +35,7 @@ class monument:
         for [tier, data] in [[1, info[index["tier_1"]]], [2, info[index["tier_2"]]], [3, info[index["tier_3"]]]]:
             tier: int
             data: str
-            self.modifiers[tier]["province"] = data.split("\n")
+            self.modifiers[tier]["province"] = data.replace("\r", "").split("\n")
             for i in range(len(self.modifiers[tier]["province"])): # Other - can be used for anything
                 if "---other---" in self.modifiers[tier]["province"][i]:
                     self.modifiers[tier]["other"] = self.modifiers[tier]["province"][i+1:]
@@ -93,7 +93,12 @@ class monument:
     
     def get_tier_data(self, tier: int, mod_type: str) -> list[str]:
         mod_type = mod_type.lower()
-        return self.modifiers[tier][mod_type]
+        modifier = self.modifiers[tier][mod_type]
+        is_empty = True
+        for row in modifier:
+            if not empty(row):
+                is_empty = False
+        return modifier, is_empty
 
 
     def build_config(self) -> str:
@@ -156,24 +161,30 @@ class monument:
             output +=           f"""			factor = {cost}\n"""
             output +=           f"""		}}\n"""
             
-            for [category, modifier] in [
-                ["province",    "province_modifiers"  ], 
-                ["area",        "area_modifier"       ], 
-                ["region",      "region_modifier"     ], 
-                ["country",     "country_modifiers"   ], 
-                ["upgrade",     "on_upgraded"         ], 
-                ["conditional", "conditional_modifier"]
+            for [category, modifier, force_show] in [
+                ["province",    "province_modifiers"  , True ], 
+                ["area",        "area_modifier"       , True ], 
+                ["region",      "region_modifier"     , False], 
+                ["country",     "country_modifiers"   , True ], 
+                ["upgrade",     "on_upgraded"         , False], 
+                ["conditional", "conditional_modifier", False]
             ]:
-                output +=       f"""		{modifier} = {{\n"""
-                for row in self.get_tier_data(tier, category):
-                    if not empty(row):
-                        output +=   f"""			{row}\n"""
-                output +=       f"""		}}\n"""
-                
-            for row in self.get_tier_data(tier, "other"):
-                    if not empty(row):
-                        output +=   f"""		{row}\n"""
-                
+                tier_data, is_empty = self.get_tier_data(tier, category)
+                if force_show or not is_empty:
+                    output +=       f"""		{modifier} = {{\n"""
+                    print("tier", tier_data)
+                    for row in tier_data:
+                        if not empty(row):
+                            print("row", row)
+                            output +=   f"""			{row}\n"""
+                    output +=       f"""		}}\n"""
+            
+            tier_data, is_empty = self.get_tier_data(tier, "other")
+            if not is_empty:
+                for row in tier_data:
+                        if not empty(row):
+                            output +=   f"""		{row}\n"""
+            
             output +=           f"""	}}\n"""
                 
         output +=           f"""}}\n"""
