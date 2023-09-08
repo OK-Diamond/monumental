@@ -1,5 +1,5 @@
-minos_dungeons = {
-	start = 163
+uppsala_temple = {
+	start = 1
 	date = 1.01.01
 	time = {
 		months = 0
@@ -43,10 +43,6 @@ minos_dungeons = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -56,37 +52,10 @@ minos_dungeons = {
 			factor = 2500
 		}
 		province_modifiers = {
-			local_governing_cost = -0.1
 		}
 		area_modifier = {
-			local_culture_conversion_cost = -0.1
 		}
 		country_modifiers = {
-			may_build_supply_depot = yes
-		}
-		on_upgraded = {
-			FROM = {
-			    add_prestige = 5
-			}
-		}
-		conditional_modifier = {
-			trigger = {
-			    owner = { 
-			        OR = { 
-			            tag = FRA 
-			            was_tag = FRA
-			            overlord = {
-			                OR = { 
-			                    tag = FRA
-			                    was_tag = FRA
-			                }
-			            }
-			        }
-			    }
-			}
-			modifier = {
-			    max_absolutism = 5
-			}
 		}
 	}
 	tier_3 = {
@@ -101,10 +70,6 @@ minos_dungeons = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
 		}
 	}
 }
@@ -117,7 +82,7 @@ seat_of_the_archon = {
 	build_cost = 0
 	can_be_moved = no
 	move_days_per_unit_distance = 10
-	starting_tier = 0
+	starting_tier = 1
 	type = monument
 	build_trigger = {
 	}
@@ -153,10 +118,6 @@ seat_of_the_archon = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -171,10 +132,6 @@ seat_of_the_archon = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_3 = {
 		upgrade_time = {
@@ -188,15 +145,12 @@ seat_of_the_archon = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
+			estate_church_privilege_slots = 1
 		}
 	}
 }
-mon3 = {
-	start = 4345
+minos_dungeons = {
+	start = 163
 	date = 1.01.01
 	time = {
 		months = 0
@@ -204,7 +158,7 @@ mon3 = {
 	build_cost = 0
 	can_be_moved = no
 	move_days_per_unit_distance = 10
-	starting_tier = 0
+	starting_tier = 1
 	type = monument
 	build_trigger = {
 	}
@@ -240,10 +194,6 @@ mon3 = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -258,10 +208,6 @@ mon3 = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_3 = {
 		upgrade_time = {
@@ -275,97 +221,6 @@ mon3 = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-}
-mon4 = {
-	start = 198
-	date = 1.01.01
-	time = {
-		months = 0
-	}
-	build_cost = 0
-	can_be_moved = no
-	move_days_per_unit_distance = 10
-	starting_tier = 0
-	type = monument
-	build_trigger = {
-	}
-	on_built = {}
-	on_destroyed = {}
-	can_use_modifiers_trigger = {
-	}
-	can_upgrade_trigger = {
-	}
-	keep_trigger = {}
-	tier_0 = {
-		upgrade_time = {
-			months = 0
-		}
-		cost_to_upgrade = {
-			factor = 0
-		}
-		province_modifiers = {}
-		area_modifier = {}
-		country_modifiers = {}
-		on_upgraded = {}
-	}
-	tier_1 = {
-		upgrade_time = {
-			months = 120
-		}
-		cost_to_upgrade = {
-			factor = 1000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_2 = {
-		upgrade_time = {
-			months = 240
-		}
-		cost_to_upgrade = {
-			factor = 2500
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_3 = {
-		upgrade_time = {
-			months = 480
-		}
-		cost_to_upgrade = {
-			factor = 5000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
 		}
 	}
 }
@@ -426,10 +281,6 @@ lingonian_military_academy = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -444,10 +295,6 @@ lingonian_military_academy = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_3 = {
 		upgrade_time = {
@@ -461,15 +308,14 @@ lingonian_military_academy = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
+			army_tradition_from_battle = 0.01
+			prestige_from_land = 0.05
+			land_forcelimit_modifier = 0.10
 		}
 	}
 }
-historic_centre_of_carthage = {
-	start = 341
+punic_centre_of_conversion = {
+	start = 198
 	date = 1.01.01
 	time = {
 		months = 0
@@ -513,10 +359,6 @@ historic_centre_of_carthage = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -531,10 +373,6 @@ historic_centre_of_carthage = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_3 = {
 		upgrade_time = {
@@ -548,358 +386,6 @@ historic_centre_of_carthage = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-}
-mon7 = {
-	start = 4255
-	date = 1.01.01
-	time = {
-		months = 0
-	}
-	build_cost = 0
-	can_be_moved = no
-	move_days_per_unit_distance = 10
-	starting_tier = 0
-	type = monument
-	build_trigger = {
-	}
-	on_built = {}
-	on_destroyed = {}
-	can_use_modifiers_trigger = {
-	}
-	can_upgrade_trigger = {
-	}
-	keep_trigger = {}
-	tier_0 = {
-		upgrade_time = {
-			months = 0
-		}
-		cost_to_upgrade = {
-			factor = 0
-		}
-		province_modifiers = {}
-		area_modifier = {}
-		country_modifiers = {}
-		on_upgraded = {}
-	}
-	tier_1 = {
-		upgrade_time = {
-			months = 120
-		}
-		cost_to_upgrade = {
-			factor = 1000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_2 = {
-		upgrade_time = {
-			months = 240
-		}
-		cost_to_upgrade = {
-			factor = 2500
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_3 = {
-		upgrade_time = {
-			months = 480
-		}
-		cost_to_upgrade = {
-			factor = 5000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-}
-uppsala_temple = {
-	start = 1
-	date = 1.01.01
-	time = {
-		months = 0
-	}
-	build_cost = 0
-	can_be_moved = no
-	move_days_per_unit_distance = 10
-	starting_tier = 0
-	type = monument
-	build_trigger = {
-	}
-	on_built = {}
-	on_destroyed = {}
-	can_use_modifiers_trigger = {
-	}
-	can_upgrade_trigger = {
-	}
-	keep_trigger = {}
-	tier_0 = {
-		upgrade_time = {
-			months = 0
-		}
-		cost_to_upgrade = {
-			factor = 0
-		}
-		province_modifiers = {}
-		area_modifier = {}
-		country_modifiers = {}
-		on_upgraded = {}
-	}
-	tier_1 = {
-		upgrade_time = {
-			months = 120
-		}
-		cost_to_upgrade = {
-			factor = 1000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_2 = {
-		upgrade_time = {
-			months = 240
-		}
-		cost_to_upgrade = {
-			factor = 2500
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_3 = {
-		upgrade_time = {
-			months = 480
-		}
-		cost_to_upgrade = {
-			factor = 5000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-}
-althing_general_assembly = {
-	start = 370
-	date = 1.01.01
-	time = {
-		months = 0
-	}
-	build_cost = 0
-	can_be_moved = no
-	move_days_per_unit_distance = 10
-	starting_tier = 0
-	type = monument
-	build_trigger = {
-	}
-	on_built = {}
-	on_destroyed = {}
-	can_use_modifiers_trigger = {
-	}
-	can_upgrade_trigger = {
-	}
-	keep_trigger = {}
-	tier_0 = {
-		upgrade_time = {
-			months = 0
-		}
-		cost_to_upgrade = {
-			factor = 0
-		}
-		province_modifiers = {}
-		area_modifier = {}
-		country_modifiers = {}
-		on_upgraded = {}
-	}
-	tier_1 = {
-		upgrade_time = {
-			months = 120
-		}
-		cost_to_upgrade = {
-			factor = 1000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_2 = {
-		upgrade_time = {
-			months = 240
-		}
-		cost_to_upgrade = {
-			factor = 2500
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_3 = {
-		upgrade_time = {
-			months = 480
-		}
-		cost_to_upgrade = {
-			factor = 5000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-}
-mon10 = {
-	start = 2300
-	date = 1.01.01
-	time = {
-		months = 0
-	}
-	build_cost = 0
-	can_be_moved = no
-	move_days_per_unit_distance = 10
-	starting_tier = 0
-	type = monument
-	build_trigger = {
-	}
-	on_built = {}
-	on_destroyed = {}
-	can_use_modifiers_trigger = {
-	}
-	can_upgrade_trigger = {
-	}
-	keep_trigger = {}
-	tier_0 = {
-		upgrade_time = {
-			months = 0
-		}
-		cost_to_upgrade = {
-			factor = 0
-		}
-		province_modifiers = {}
-		area_modifier = {}
-		country_modifiers = {}
-		on_upgraded = {}
-	}
-	tier_1 = {
-		upgrade_time = {
-			months = 120
-		}
-		cost_to_upgrade = {
-			factor = 1000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_2 = {
-		upgrade_time = {
-			months = 240
-		}
-		cost_to_upgrade = {
-			factor = 2500
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_3 = {
-		upgrade_time = {
-			months = 480
-		}
-		cost_to_upgrade = {
-			factor = 5000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
 		}
 	}
 }
@@ -948,10 +434,6 @@ temple_of_barcino = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -966,10 +448,6 @@ temple_of_barcino = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_3 = {
 		upgrade_time = {
@@ -983,10 +461,6 @@ temple_of_barcino = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
 		}
 	}
 }
@@ -1035,10 +509,6 @@ carthaginian_aqueducts_of_gadir = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -1053,10 +523,6 @@ carthaginian_aqueducts_of_gadir = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_3 = {
 		upgrade_time = {
@@ -1070,10 +536,6 @@ carthaginian_aqueducts_of_gadir = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
 		}
 	}
 }
@@ -1122,10 +584,6 @@ the_looms_of_tol_tzaphon = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -1139,10 +597,6 @@ the_looms_of_tol_tzaphon = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
 		}
 	}
 	tier_3 = {
@@ -1158,14 +612,10 @@ the_looms_of_tol_tzaphon = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 }
-mon14 = {
-	start = 236
+hellenic_religious_building = {
+	start = 2300
 	date = 1.01.01
 	time = {
 		months = 0
@@ -1209,10 +659,6 @@ mon14 = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -1226,10 +672,6 @@ mon14 = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
 		}
 	}
 	tier_3 = {
@@ -1245,14 +687,154 @@ mon14 = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
+	}
+}
+great_cothon = {
+	start = 341
+	date = 1.01.01
+	time = {
+		months = 0
+	}
+	build_cost = 0
+	can_be_moved = no
+	move_days_per_unit_distance = 10
+	starting_tier = 1
+	type = monument
+	build_trigger = {
+		owner = {
+		    OR = {
+		        tag = CAR
+		        primary_culture = punic_culture
+		        accepted_culture = punic_culture
+		        has_country_flag = car_build_great_cothon_flag
+		    }
 		}
-		conditional_modifier = {
+	}
+	on_built = {}
+	on_destroyed = {}
+	can_use_modifiers_trigger = {
+		owner = {
+		    OR = {
+		        tag = CAR
+		        primary_culture = punic_culture
+		        accepted_culture = punic_culture
+		        has_country_flag = car_build_great_cothon_flag
+		    }
+		}
+	}
+	can_upgrade_trigger = {
+		owner = {
+		    OR = {
+		        tag = CAR
+		        primary_culture = punic_culture
+		        accepted_culture = punic_culture
+		        has_country_flag = car_build_great_cothon_flag
+		    }
+		}
+	}
+	keep_trigger = {}
+	tier_0 = {
+		upgrade_time = {
+			months = 0
+		}
+		cost_to_upgrade = {
+			factor = 0
+		}
+		province_modifiers = {}
+		area_modifier = {}
+		country_modifiers = {}
+		on_upgraded = {}
+	}
+	tier_1 = {
+		upgrade_time = {
+			months = 120
+		}
+		cost_to_upgrade = {
+			factor = 1000
+		}
+		province_modifiers = {
+			local_sailors_modifier = 0.25
+			trade_value_modifier = 0.1
+		}
+		area_modifier = {
+		}
+		country_modifiers = {
+			trade_efficiency = 0.1
+		}
+	}
+	tier_2 = {
+		upgrade_time = {
+			months = 240
+		}
+		cost_to_upgrade = {
+			factor = 2500
+		}
+		province_modifiers = {
+			local_sailors_modifier = 0.33
+			trade_value_modifier = 0.25
+			local_ship_repair = 0.1
+		}
+		area_modifier = {
+			local_prosperity_growth = 0.2
+		}
+		country_modifiers = {
+			trade_efficiency = 0.15
+			mercantilism_cost = -0.1
+		}
+		on_upgraded = {
+			owner = {
+			    add_mercantilism = 3
+			    add_navy_tradition = 25
+			    }
+			add_unit_construction = {
+			    type = galley
+			    amount = 5
+			    speed = 0.1
+			    cost = 0
+			}
+		}
+	}
+	tier_3 = {
+		upgrade_time = {
+			months = 480
+		}
+		cost_to_upgrade = {
+			factor = 5000
+		}
+		province_modifiers = {
+			local_sailors_modifier = 0.5
+			trade_value_modifier = 0.5
+			local_ship_repair = 0.25
+		}
+		area_modifier = {
+			local_prosperity_growth = 0.4
+		}
+		region_modifier = {
+			local_build_cost = -0.1
+		}
+		country_modifiers = {
+			trade_efficiency = 0.2
+			mercantilism_cost = -0.25
+		}
+		on_upgraded = {
+			owner = { 
+			    add_mercantilism = 5
+			    add_navy_tradition = 25
+			    create_admiral = {
+			        tradition = 100
+			    }
+			}
+			add_unit_construction = {
+			    type = galley
+			    amount = 5
+			    speed = 0.1
+			    cost = 0
+			}
 		}
 	}
 }
-mon15 = {
-	start = 4120
+althing_general_assembly = {
+	start = 370
 	date = 1.01.01
 	time = {
 		months = 0
@@ -1296,10 +878,6 @@ mon15 = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -1314,9 +892,80 @@ mon15 = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
+	}
+	tier_3 = {
+		upgrade_time = {
+			months = 480
 		}
-		conditional_modifier = {
+		cost_to_upgrade = {
+			factor = 5000
+		}
+		province_modifiers = {
+		}
+		area_modifier = {
+		}
+		country_modifiers = {
+		}
+	}
+}
+stone_of_destiny = {
+	start = 373
+	date = 1.01.01
+	time = {
+		months = 0
+	}
+	build_cost = 0
+	can_be_moved = yes
+	move_days_per_unit_distance = 10
+	starting_tier = 1
+	type = monument
+	build_trigger = {
+	}
+	on_built = {}
+	on_destroyed = {}
+	can_use_modifiers_trigger = {
+	}
+	can_upgrade_trigger = {
+	}
+	keep_trigger = {}
+	tier_0 = {
+		upgrade_time = {
+			months = 0
+		}
+		cost_to_upgrade = {
+			factor = 0
+		}
+		province_modifiers = {}
+		area_modifier = {}
+		country_modifiers = {}
+		on_upgraded = {}
+	}
+	tier_1 = {
+		upgrade_time = {
+			months = 120
+		}
+		cost_to_upgrade = {
+			factor = 1000
+		}
+		province_modifiers = {
+		}
+		area_modifier = {
+		}
+		country_modifiers = {
+		}
+	}
+	tier_2 = {
+		upgrade_time = {
+			months = 240
+		}
+		cost_to_upgrade = {
+			factor = 2500
+		}
+		province_modifiers = {
+		}
+		area_modifier = {
+		}
+		country_modifiers = {
 		}
 	}
 	tier_3 = {
@@ -1333,13 +982,14 @@ mon15 = {
 		country_modifiers = {
 		}
 		on_upgraded = {
-		}
-		conditional_modifier = {
+			owner = {
+			    destiny_thing = yes
+			}
 		}
 	}
 }
-mon16 = {
-	start = 121
+tengri_outpost = {
+	start = 4255
 	date = 1.01.01
 	time = {
 		months = 0
@@ -1383,10 +1033,6 @@ mon16 = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_2 = {
 		upgrade_time = {
@@ -1401,10 +1047,6 @@ mon16 = {
 		}
 		country_modifiers = {
 		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
 	}
 	tier_3 = {
 		upgrade_time = {
@@ -1418,271 +1060,6 @@ mon16 = {
 		area_modifier = {
 		}
 		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-}
-mon17 = {
-	start = 69
-	date = 1.01.01
-	time = {
-		months = 0
-	}
-	build_cost = 0
-	can_be_moved = no
-	move_days_per_unit_distance = 10
-	starting_tier = 0
-	type = monument
-	build_trigger = {
-	}
-	on_built = {}
-	on_destroyed = {}
-	can_use_modifiers_trigger = {
-	}
-	can_upgrade_trigger = {
-	}
-	keep_trigger = {}
-	tier_0 = {
-		upgrade_time = {
-			months = 0
-		}
-		cost_to_upgrade = {
-			factor = 0
-		}
-		province_modifiers = {}
-		area_modifier = {}
-		country_modifiers = {}
-		on_upgraded = {}
-	}
-	tier_1 = {
-		upgrade_time = {
-			months = 120
-		}
-		cost_to_upgrade = {
-			factor = 1000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_2 = {
-		upgrade_time = {
-			months = 240
-		}
-		cost_to_upgrade = {
-			factor = 2500
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_3 = {
-		upgrade_time = {
-			months = 480
-		}
-		cost_to_upgrade = {
-			factor = 5000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-}
-mon18 = {
-	start = 101
-	date = 1.01.01
-	time = {
-		months = 0
-	}
-	build_cost = 0
-	can_be_moved = no
-	move_days_per_unit_distance = 10
-	starting_tier = 0
-	type = monument
-	build_trigger = {
-	}
-	on_built = {}
-	on_destroyed = {}
-	can_use_modifiers_trigger = {
-	}
-	can_upgrade_trigger = {
-	}
-	keep_trigger = {}
-	tier_0 = {
-		upgrade_time = {
-			months = 0
-		}
-		cost_to_upgrade = {
-			factor = 0
-		}
-		province_modifiers = {}
-		area_modifier = {}
-		country_modifiers = {}
-		on_upgraded = {}
-	}
-	tier_1 = {
-		upgrade_time = {
-			months = 120
-		}
-		cost_to_upgrade = {
-			factor = 1000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_2 = {
-		upgrade_time = {
-			months = 240
-		}
-		cost_to_upgrade = {
-			factor = 2500
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_3 = {
-		upgrade_time = {
-			months = 480
-		}
-		cost_to_upgrade = {
-			factor = 5000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-}
-mon19 = {
-	start = 415
-	date = 1.01.01
-	time = {
-		months = 0
-	}
-	build_cost = 0
-	can_be_moved = no
-	move_days_per_unit_distance = 10
-	starting_tier = 0
-	type = monument
-	build_trigger = {
-	}
-	on_built = {}
-	on_destroyed = {}
-	can_use_modifiers_trigger = {
-	}
-	can_upgrade_trigger = {
-	}
-	keep_trigger = {}
-	tier_0 = {
-		upgrade_time = {
-			months = 0
-		}
-		cost_to_upgrade = {
-			factor = 0
-		}
-		province_modifiers = {}
-		area_modifier = {}
-		country_modifiers = {}
-		on_upgraded = {}
-	}
-	tier_1 = {
-		upgrade_time = {
-			months = 120
-		}
-		cost_to_upgrade = {
-			factor = 1000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_2 = {
-		upgrade_time = {
-			months = 240
-		}
-		cost_to_upgrade = {
-			factor = 2500
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
-		}
-	}
-	tier_3 = {
-		upgrade_time = {
-			months = 480
-		}
-		cost_to_upgrade = {
-			factor = 5000
-		}
-		province_modifiers = {
-		}
-		area_modifier = {
-		}
-		country_modifiers = {
-		}
-		on_upgraded = {
-		}
-		conditional_modifier = {
 		}
 	}
 }
