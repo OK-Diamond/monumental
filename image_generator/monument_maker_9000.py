@@ -33,4 +33,4 @@ def main(input_location: str, output_location: str, output_file_type = "dds") ->
     template.close()
 
 if __name__ == "__main__":
-    main("", "output\\", "dds")
+    main("", "output\\", "png")
