@@ -8,6 +8,8 @@ from os import replace, remove
 
 class monument:
     def __init__(self, info: list[str], index: dict[str, int]) -> None:
+        for row in range(len(info)):
+            info[row] = info[row].replace("\r", "")
         print("info", info)
         self.name = info[index["name"]]
         self.id = unidecode(info[index["name"]]).lower()
