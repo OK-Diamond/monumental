@@ -26,9 +26,13 @@ def retrieve_range(spreadsheet_id: str, range_name: str, scopes: list, token_loc
         creds = Credentials.from_authorized_user_file(token_location, scopes)
     # If there are no (valid) credentials available, let the user log in.
     if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
+        try:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(credentials_location, scopes)
+                creds = flow.run_local_server(port=0)
+        except:
             flow = InstalledAppFlow.from_client_secrets_file(credentials_location, scopes)
             creds = flow.run_local_server(port=0)
         # Save the credentials for the next run
@@ -60,8 +64,8 @@ if __name__ == "__main__":
         "1C1mt8cOGRljZgc5gwC9uRpVlL-XjPQ84Di4g08tNEuo", 
         "monument_type!A1:C", 
         ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/spreadsheets'], 
-        "eu4_mods/monumental/subprograms/data/token.json", 
-        "eu4_mods/monumental/subprograms/data/credentials.json"
+        "monumental/subprograms/data/token.json", 
+        "monumental/subprograms/data/credentials.json"
     )
     for i in a:
         print(i)

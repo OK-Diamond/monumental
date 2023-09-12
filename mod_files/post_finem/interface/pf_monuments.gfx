@@ -1,0 +1,54 @@
+spriteTypes = {
+	spriteType = {
+		name = "GFX_great_project_uppsala_temple"
+		texturefile = "gfx//interface//great_projects//great_project_uppsala_temple.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_seat_of_the_archon"
+		texturefile = "gfx//interface//great_projects//great_project_seat_of_the_archon.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_minos_dungeons"
+		texturefile = "gfx//interface//great_projects//great_project_minos_dungeons.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_lingonian_military_academy"
+		texturefile = "gfx//interface//great_projects//great_project_lingonian_military_academy.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_grand_temple_to_tanit"
+		texturefile = "gfx//interface//great_projects//great_project_grand_temple_to_tanit.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_temple_of_barcino"
+		texturefile = "gfx//interface//great_projects//great_project_temple_of_barcino.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_carthaginian_aqueducts_of_gadir"
+		texturefile = "gfx//interface//great_projects//great_project_carthaginian_aqueducts_of_gadir.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_the_looms_of_tol_tzaphon"
+		texturefile = "gfx//interface//great_projects//great_project_the_looms_of_tol_tzaphon.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_hellenic_religious_building"
+		texturefile = "gfx//interface//great_projects//great_project_hellenic_religious_building.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_great_cothon"
+		texturefile = "gfx//interface//great_projects//great_project_great_cothon.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_althing_general_assembly"
+		texturefile = "gfx//interface//great_projects//great_project_althing_general_assembly.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_stone_of_destiny"
+		texturefile = "gfx//interface//great_projects//great_project_stone_of_destiny.dds"
+	}
+	spriteType = {
+		name = "GFX_great_project_tengri_outpost"
+		texturefile = "gfx//interface//great_projects//great_project_tengri_outpost.dds"
+	}
+}

@@ -172,10 +172,10 @@ class monument:
                 tier_data, is_empty = self.get_tier_data(tier, category)
                 if force_show or not is_empty:
                     output +=       f"""		{modifier} = {{\n"""
-                    print("tier", tier_data)
+                    #print("tier", tier_data)
                     for row in tier_data:
                         if not empty(row):
-                            print("row", row)
+                            #print("row", row)
                             output +=   f"""			{row}\n"""
                     output +=       f"""		}}\n"""
             
@@ -207,7 +207,7 @@ def batch_copy(source_folder: str, dest_folder: str, files: str|list) -> None:
     if type(files) == str:
         files = [files]
     for f in files:
-        print(f)
+        #print(f)
         file.copy(f"{source_folder}/{f}", f"{dest_folder}/{f}")
     return
 
@@ -215,7 +215,8 @@ def main() -> None:
      # Things to mess with:
     MOD_NAME = "post_finem" # Please avoid spaces, punctuation, special characters, etc. as they could lead to unexpected results.
     MOD_ID = "pf" # as above
-    MOD_FILES_LOCATION = "mod_files"
+    MOD_FILES_LOCATION = "C:/Users/Oliver Kirk/Documents/Paradox Interactive/Europa Universalis IV/mod"
+    #MOD_FILES_LOCATION = "mod_files"
     SOURCE_FILES_LOCATION = "source_files"
     SCOPES = ["https://www.googleapis.com/auth/drive.readonly", "https://www.googleapis.com/auth/spreadsheets.readonly"]
     TOKEN_LOCATION = f"subprograms/data/token.json"
@@ -240,6 +241,7 @@ def main() -> None:
     config = ""
     for i in mon_list:
         config += i.build_config()
+    print("write to", f"{MOD_FILES_LOCATION}/{MOD_NAME}/common/great_projects/{FILE_NAMES['common']}")
     file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/common/great_projects/{FILE_NAMES['common']}", config, "cp1252")
     
     print(f"localisation/{FILE_NAMES['localisation']}")
