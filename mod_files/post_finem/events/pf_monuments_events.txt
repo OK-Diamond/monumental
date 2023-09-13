@@ -1,0 +1,110 @@
+namespace = pf_monuments
+
+province_event = { # Blessing of Zeus
+    id = pf_monuments.1
+    title = pf_monuments.1.title
+    desc = pf_monuments.1.desc
+    picture = NORSE_TEMPLE_eventPicture
+
+    mean_time_to_happen = { # This is in concurrence with the flag cooldown
+        months = 4
+    }
+
+    trigger = {
+        has_great_project = {
+            type = hall_of_pantheons
+            tier = 1
+        }
+        province_is_or_accepts_religion = {
+            religion = hellenic
+        }
+        OR = {
+            had_province_flag = {
+                flag = hall_of_pantheons_blessing_flag
+                days = 350
+            }
+            AND = { # Reduced cooldown if you have <0 stability
+                had_province_flag = {
+                    flag = hall_of_pantheons_blessing_flag
+                    days = 350
+                }
+                NOT = {
+                    owner = {
+                        stability = 0
+                    }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = we_are_truly_blessed
+        trigger = {
+        }
+        set_province_flag = hall_of_pantheons_blessing_flag
+        owner = {
+            add_legitimacy = 5
+            add_republican_tradition = 5
+            add_devotion = 5
+            add_horde_unity = 5
+            add_meritocracy = 5
+        }
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
+province_event = { # Blessing of Baal Hammon
+    id = pf_monuments.2
+    title = pf_monuments.2.title
+    desc = pf_monuments.2.desc
+    picture = NORSE_TEMPLE_eventPicture
+
+    mean_time_to_happen = { # This is in concurrence with the flag cooldown
+        months = 4
+    }
+
+    trigger = {
+        has_great_project = {
+            type = hall_of_pantheons
+            tier = 1
+        }
+        province_is_or_accepts_religion = {
+            religion = punic_religion
+        }
+        OR = {
+            had_province_flag = {
+                flag = hall_of_pantheons_blessing_flag
+                days = 350
+            }
+            AND = { # Reduced cooldown if you have <0 stability
+                had_province_flag = {
+                    flag = hall_of_pantheons_blessing_flag
+                    days = 350
+                }
+                NOT = {
+                    owner = {
+                        stability = 0
+                    }
+                }
+            }
+        }
+    }
+
+    option = {
+        name = we_are_truly_blessed
+        trigger = {
+        }
+        set_province_flag = hall_of_pantheons_blessing_flag
+        owner = {
+            add_legitimacy = 5
+            add_republican_tradition = 5
+            add_devotion = 5
+            add_horde_unity = 5
+            add_meritocracy = 5
+        }
+        ai_chance = {
+            factor = 1
+        }
+    }
+}
