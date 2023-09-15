@@ -17,12 +17,14 @@ class monument:
             self.id = self.id.replace(i, "_")
         for i in ["'", ".", "/", "\\", "\"", "\'"]:
             self.id = self.id.replace(i, "")
-        print(self.name, self.id)
+        self.code = info[index["code"]]
+        print(self.name, self.id, self.code)
         self.province_id = info[index["prov_id"]]
         self.description = info[index["description"]].replace("\n", "\\n").replace("\"", "\\\"")
         self.artist = info[index["artist"]].replace("\n", "\\n").replace("\"", "\\\"")
         self.requirements = info[index["requirements"]].split("\n")
         self.starting_tier = info[index["starting_tier"]]
+        #self.tooltip = info[index["tooltip"]].replace("\r", "").split("\n")
         
         if info[index["movable"]].lower() in ["yes", "no"]:
             self.movable = info[index["movable"]].lower()
@@ -102,9 +104,8 @@ class monument:
                 is_empty = False
         return modifier, is_empty
 
-
-    def build_config(self) -> str:
-        output  =           f"""{self.id} = {{\n"""
+    def build_monument(self) -> str:
+        output  =           f"""{self.id} = {{ # {self.code}\n"""
         output +=           f"""	start = {self.province_id}\n"""
         output +=           f"""	date = 1.01.01\n"""
         output +=           f"""	time = {{\n"""
@@ -192,6 +193,27 @@ class monument:
         output +=           f"""}}\n"""
         return output
 
+    def build_localisation(self):
+         # Name
+        output = f" {self.id}:0 \"{self.name}\"\n"
+         # Description
+        has_desc = not empty(self.description) 
+        has_artist = not empty(self.artist)
+        if has_desc or has_artist:
+            output += f" {self.id}_desc:0 \""
+            if has_desc:
+                output += f"--------------\\n{self.description}"
+                if has_artist:
+                    output += "\\n"
+            if has_artist:
+                output += f"--------------\\nArt by {self.artist}"
+            output += "\"\n"
+         # Tooltips
+        #if not empty(self.tooltip):
+        #    for tt_number in range(len(self.tooltip)):
+        #        output += f" {self.id}_tt{tt_number}:0 \"{self.tooltip[tt_number]}\"\n"
+        return output
+
 def empty(a: str|list) -> bool:
     if type(a) == list:
         if len(a) == 0:
@@ -229,9 +251,9 @@ def main() -> None:
      # Don't mess with these:
     IMAGE_DEST_LOCATION = "temp"
     FILE_NAMES = {
-        "common": f"{MOD_ID}_monuments.txt", 
-        "localisation": f"{MOD_ID}_monuments_l_english.yml", 
-        "interface": f"{MOD_ID}_monuments.gfx"
+        "common": f"{MOD_ID}_mon_monuments.txt", 
+        "localisation": f"{MOD_ID}_mon_l_english.yml", 
+        "interface": f"{MOD_ID}_mon_monuments.gfx"
     }
     
     mon_list: list[monument] = []
@@ -241,26 +263,15 @@ def main() -> None:
 
     print(f"common/great_projects/{FILE_NAMES['common']}")
     config = ""
-    for i in mon_list:
-        config += i.build_config()
+    for mon in mon_list:
+        config += mon.build_monument()
     print("write to", f"{MOD_FILES_LOCATION}/{MOD_NAME}/common/great_projects/{FILE_NAMES['common']}")
     file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/common/great_projects/{FILE_NAMES['common']}", config, "cp1252")
     
     print(f"localisation/{FILE_NAMES['localisation']}")
     localisation = "l_english:\n"
-    for i in range(len(mon_list)): # Remove vanilla monuments
-        has_desc = not empty(mon_list[i].get_description()) 
-        has_artist = not empty(mon_list[i].get_artist())
-        localisation += f" {mon_list[i].get_id()}:0 \"{mon_list[i].get_name()}\"\n"
-        if has_desc or has_artist:
-            localisation += f" {mon_list[i].get_id()}_desc:0 \""
-            if has_desc:
-                localisation += f"--------------\\n{mon_list[i].get_description()}"
-                if has_artist:
-                    localisation += "\\n"
-            if has_artist:
-                localisation += f"--------------\\nArt by {mon_list[i].get_artist()}"
-            localisation += "\"\n"
+    for mon in mon_list:
+        localisation += mon.build_localisation()
     file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/localisation/{FILE_NAMES['localisation']}", localisation, "utf-8-sig")
     
     print("gfx/interface/great_projects   image files")
