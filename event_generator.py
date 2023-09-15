@@ -21,8 +21,9 @@ class hop_god:
     
     def build_event(self, namespace: str, picture: str = "NORSE_TEMPLE_eventPicture") -> str:
         MEAN_TIME = 6
-        COOLDOWN = 365*4
-        COOLDOWN_REDUCED = 365*3
+        COOLDOWN = 365*10
+        COOLDOWN_STAB_MULTIPLIER = 0.7
+        COOLDOWN_UPGRADE_MULTIPLIER = 0.7
         FLAG = f"pf_mon_{self.monument['code']}_blessing_flag"
         
         output =  f"""province_event = {{ # Blessing of {self.name}\n"""
@@ -31,41 +32,54 @@ class hop_god:
         output += f"""    desc = {namespace}.{self.number}.desc\n"""
         output += f"""    picture = {picture}\n"""
         output += f"""    goto = ROOT\n"""
-        output += f"""\n"""
-        output += f"""    mean_time_to_happen = {{ # This is in concurrence with the flag cooldown\n"""
-        output += f"""        months = {MEAN_TIME}\n"""
-        output += f"""    }}\n"""
-        output += f"""\n"""
+        output += f"""    mean_time_to_happen = {{months = {MEAN_TIME}}} # This is in concurrence with the flag cooldown\n"""
+        output += f"""    \n"""
         output += f"""    trigger = {{\n"""
         output += f"""        has_great_project = {{\n"""
         output += f"""            type = {self.monument['id']}\n"""
         output += f"""            tier = 1\n"""
         output += f"""        }}\n"""
-        output += f"""        province_is_or_accepts_religion = {{\n"""
-        output += f"""            religion = {self.religion}\n"""
-        output += f"""        }}\n"""
-        output += f"""        OR = {{\n"""
-        output += f"""            NOT = {{\n"""
-        output += f"""                has_province_flag = {FLAG}\n"""
+        output += f"""        province_is_or_accepts_religion = {{religion = {self.religion}}}\n"""
+        output += f"""        if = {{ # Reduced cooldown if the monument is tier 2\n"""
+        output += f"""            limit = {{\n"""
+        output += f"""                has_great_project = {{\n"""
+        output += f"""                    type = {self.monument['id']}\n"""
+        output += f"""                    tier = 2\n"""
+        output += f"""                }}\n"""
         output += f"""            }}\n"""
-        output += f"""            had_province_flag = {{\n"""
-        output += f"""                flag = {FLAG}\n"""
-        output += f"""                days = {COOLDOWN}\n"""
-        output += f"""            }}\n"""
-        output += f"""            AND = {{ # Reduced cooldown if you have <0 stability\n"""
+        output += f"""            OR = {{\n"""
+        output += f"""                NOT = {{has_province_flag = {FLAG}}}\n"""
         output += f"""                had_province_flag = {{\n"""
         output += f"""                    flag = {FLAG}\n"""
-        output += f"""                    days = {COOLDOWN_REDUCED}\n"""
+        output += f"""                    days = {int(COOLDOWN*COOLDOWN_UPGRADE_MULTIPLIER)}\n"""
         output += f"""                }}\n"""
-        output += f"""                NOT = {{\n"""
-        output += f"""                    owner = {{\n"""
-        output += f"""                        stability = 0\n"""
+        output += f"""                AND = {{ # Reduced cooldown if you have <0 stability\n"""
+        output += f"""                    had_province_flag = {{\n"""
+        output += f"""                        flag = {FLAG}\n"""
+        output += f"""                        days = {int(COOLDOWN*COOLDOWN_STAB_MULTIPLIER*COOLDOWN_UPGRADE_MULTIPLIER)}\n"""
         output += f"""                    }}\n"""
+        output += f"""                    NOT = {{owner = {{stability = 0}}}}\n"""
+        output += f"""                }}\n"""
+        output += f"""            }}\n"""
+        output += f"""        }}\n"""
+        output += f"""        else = {{\n"""
+        output += f"""            OR = {{\n"""
+        output += f"""                NOT = {{has_province_flag = {FLAG}}}\n"""
+        output += f"""                had_province_flag = {{\n"""
+        output += f"""                    flag = {FLAG}\n"""
+        output += f"""                    days = {COOLDOWN}\n"""
+        output += f"""                }}\n"""
+        output += f"""                AND = {{ # Reduced cooldown if you have <0 stability\n"""
+        output += f"""                    had_province_flag = {{\n"""
+        output += f"""                        flag = {FLAG}\n"""
+        output += f"""                        days = {int(COOLDOWN*COOLDOWN_STAB_MULTIPLIER)}\n"""
+        output += f"""                    }}\n"""
+        output += f"""                    NOT = {{owner = {{stability = 0}}}}\n"""
         output += f"""                }}\n"""
         output += f"""            }}\n"""
         output += f"""        }}\n"""
         output += f"""    }}\n\n"""
-        for [requirements, effect] in [
+        for [requirements, effect, level] in [
             [
                 [
                     f"""NOT = {{""", 
@@ -75,7 +89,8 @@ class hop_god:
                     f"""    }}""", 
                     f"""}}"""
                 ], 
-                self.effect.replace("\r", "").split("\n")
+                self.effect.replace("\r", "").split("\n"), 
+                1
             ], 
             [
                 [
@@ -84,7 +99,8 @@ class hop_god:
                     f"""    tier = 3""", 
                     f"""}}"""
                 ], 
-                self.effect_upgraded.replace("\r", "").split("\n")
+                self.effect_upgraded.replace("\r", "").split("\n"), 
+                1
             ]
         ]:
             print("requirements", requirements)
@@ -102,11 +118,14 @@ class hop_god:
                 output +=		f"""        set_province_flag = {FLAG}\n"""
                 for i in effect:
                     output +=	f"""        {i}\n"""
-        output +=				f"""    }}\n"""
+                output = output.replace("<effect_level>", str(level))
+                output +=				f"""    }}\n"""
         output +=				f"""}}\n"""
-        for [text, replacement] in [["<effect_level>", 1]]:
-            pass
-        output = output.replace("<number>", str(self.number)).replace("<god>", self.name.lower())
+        for [text, replacement] in [
+            ["<number>", str(self.number)], 
+            ["<god>", self.name.lower()], 
+        ]:
+            output = output.replace(text, replacement)
         return output
     
     def build_loc(self, namespace: str) -> str:
@@ -156,7 +175,7 @@ def update_events(const_dict: dict) -> None:
     god_counter = 0
     range_list, index = sheets.retrieve_range_with_index(const_dict['sheets_id'], "pantheon", const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'])
     for row in range_list[1:]:
-        if not empty(row[index["effect"]]) and row[index["enabled"]] == "y":
+        if not empty(row[index["effect"]]) and row[index["enabled"]] == "TRUE":
             for [name, desc, religion] in [
                 ["hellenic_name", "hellenic_desc", "hellenic"], 
                 ["punic_name", "punic_desc", "punic_religion"], 
