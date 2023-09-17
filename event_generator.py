@@ -1,6 +1,6 @@
 import subprograms.spreadsheet as sheets
 import subprograms.file_edit as file
-from mon_gen import empty
+from mon_gen import empty, create_id_from_name
 
 class hop_god:
     def __init__(self, name: str, desc: str, effect: str, effect_upgraded: str, tooltip: str, tooltip_upgraded: str, religion: str, god_no: int) -> None:
@@ -24,7 +24,8 @@ class hop_god:
         COOLDOWN = 365*10
         COOLDOWN_STAB_MULTIPLIER = 0.7
         COOLDOWN_UPGRADE_MULTIPLIER = 0.7
-        FLAG = f"pf_mon_{self.monument['code']}_blessing_flag"
+        PROV_FLAG = f"pf_mon_{self.monument['code']}_blessing_flag"
+        COUNTRY_FLAG = f"pf_mon_{self.monument['code']}_recieved_blessing"
         
         output =  f"""province_event = {{ # Blessing of {self.name}\n"""
         output += f"""    id = {namespace}.{self.number}\n"""
@@ -48,14 +49,14 @@ class hop_god:
         output += f"""                }}\n"""
         output += f"""            }}\n"""
         output += f"""            OR = {{\n"""
-        output += f"""                NOT = {{has_province_flag = {FLAG}}}\n"""
+        output += f"""                NOT = {{has_province_flag = {PROV_FLAG}}}\n"""
         output += f"""                had_province_flag = {{\n"""
-        output += f"""                    flag = {FLAG}\n"""
+        output += f"""                    flag = {PROV_FLAG}\n"""
         output += f"""                    days = {int(COOLDOWN*COOLDOWN_UPGRADE_MULTIPLIER)}\n"""
         output += f"""                }}\n"""
         output += f"""                AND = {{ # Reduced cooldown if you have <0 stability\n"""
         output += f"""                    had_province_flag = {{\n"""
-        output += f"""                        flag = {FLAG}\n"""
+        output += f"""                        flag = {PROV_FLAG}\n"""
         output += f"""                        days = {int(COOLDOWN*COOLDOWN_STAB_MULTIPLIER*COOLDOWN_UPGRADE_MULTIPLIER)}\n"""
         output += f"""                    }}\n"""
         output += f"""                    NOT = {{owner = {{stability = 0}}}}\n"""
@@ -64,14 +65,14 @@ class hop_god:
         output += f"""        }}\n"""
         output += f"""        else = {{\n"""
         output += f"""            OR = {{\n"""
-        output += f"""                NOT = {{has_province_flag = {FLAG}}}\n"""
+        output += f"""                NOT = {{has_province_flag = {PROV_FLAG}}}\n"""
         output += f"""                had_province_flag = {{\n"""
-        output += f"""                    flag = {FLAG}\n"""
+        output += f"""                    flag = {PROV_FLAG}\n"""
         output += f"""                    days = {COOLDOWN}\n"""
         output += f"""                }}\n"""
         output += f"""                AND = {{ # Reduced cooldown if you have <0 stability\n"""
         output += f"""                    had_province_flag = {{\n"""
-        output += f"""                        flag = {FLAG}\n"""
+        output += f"""                        flag = {PROV_FLAG}\n"""
         output += f"""                        days = {int(COOLDOWN*COOLDOWN_STAB_MULTIPLIER)}\n"""
         output += f"""                    }}\n"""
         output += f"""                    NOT = {{owner = {{stability = 0}}}}\n"""
@@ -103,8 +104,8 @@ class hop_god:
                 1
             ]
         ]:
-            print("requirements", requirements)
-            print("effect", effect)
+            #print("requirements", requirements)
+            #print("effect", effect)
             if not empty(effect):
                 output +=		f"""    option = {{\n"""
                 output +=		f"""        name = pf_mon_events_we_are_truly_blessed\n"""
@@ -115,7 +116,10 @@ class hop_god:
                 output +=		f"""        ai_chance = {{\n"""
                 output +=		f"""            factor = 1\n"""
                 output +=		f"""        }}\n"""
-                output +=		f"""        set_province_flag = {FLAG}\n"""
+                output +=		f"""        set_province_flag = {PROV_FLAG}\n"""
+                output +=		f"""        owner = {{\n"""
+                output +=		f"""            set_country_flag = {COUNTRY_FLAG} # Used to track blessing in other places.\n"""
+                output +=		f"""        }}\n"""
                 for i in effect:
                     output +=	f"""        {i}\n"""
                 output = output.replace("<effect_level>", str(level))
@@ -225,11 +229,14 @@ def update_modifiers(const_dict: dict) -> None:
             modifier_output += f"{row[index['id']]} = {{\n"
             for effect in effects:
                 #print("effect", effect)
-                modifier_output += f" {effect}\n"
-            modifier_output += f"}}\n"
+                modifier_output += f"	{effect}\n"
+            modifier_output += f"}}\n\n"
              # loc_output
             loc_output += f" {row[index['id']]}:0 \"{row[index['name']]}\"\n"
-            loc_output += f" desc_{row[index['id']]}:0 \"{row[index['description']]}\"\n"
+            if empty(row[index['description']]):
+                loc_output += f" desc_{row[index['id']]}:0 \"\"\n"
+            else:
+                loc_output += f" desc_{row[index['id']]}:0 \"{row[index['description']]}\"\n"
     
     
     #print("m\n", modifier_output)
@@ -240,7 +247,100 @@ def update_modifiers(const_dict: dict) -> None:
     
      # Write loc file
     file.write(f"{const_dict['mod_files_location']}/{const_dict['mod_name']}/localisation/{const_dict['mod_id']}_mon_modifiers_l_english.yml", loc_output, "utf-8-sig")
+    return
+
+def update_missions(const_dict: dict) -> None:
+    MISSION_SHEET_ID = "13sd1VM6ISk1hjoFNsIZOFICxRCNhMYt3xA3owOvwM5c"
+    MISSION_CODE = f"{const_dict['mod_id']}_dda" # This should be unique to this mission tree
+    mission_output = ""
+    loc_output = "l_english:\n"
     
+    branch_list, branch_index = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "branch",          const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    trigger_list, _           = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "mission_trigger", const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    effect_list,  _           = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "mission_effect",  const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    tt_list,      _           = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "mission_tooltip", const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    other_list,   _           = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "mission_other",   const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    name_list,    _           = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "mission_name",    const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    
+     # branch/slot = column, position = row
+    for slot in range(4, 5):
+        potential_list = []
+        mission_output += f"{MISSION_CODE}_{slot+1} = {{\n"
+        for row in branch_list[1:]:
+            if str(row[branch_index["branch"]]) in ["all", str(slot+1)]:
+                for i in row[branch_index["other"]].split("\n"):
+                    if not empty(i):
+                        mission_output += f"    {i}\n"
+                for i in row[branch_index["potential"]].split("\n"):
+                    potential_list.append(i)
+        mission_output += f"    potential = {{\n"
+        for i in potential_list:
+            if not empty(i):
+                mission_output += f"        {i}\n"
+        mission_output += f"    }}\n"
+        for position in range(len(effect_list)):
+            print("name_list", name_list)
+            print(position, slot)
+            name_data = name_list[position][slot].split("\n")
+            print("name_data", name_data)
+            name, picture, desc = "", "mission_unknown_mission", [""]
+            if len(name_data) == 1:   name                = name_data[0] # name
+            elif len(name_data) == 2: name, picture       = name_data[0], name_data[1] # name, picture
+            else:                     name, picture, desc = name_data[0], name_data[1], name_data[2:] # name, picture, description
+            mission_id = f"{MISSION_CODE}_{create_id_from_name(name)}"
+            
+            if not empty(create_id_from_name(name)):
+                print("mission_id", mission_id, type(mission_id))
+                print("name", name)
+                # mission_output
+                mission_output += f"    {mission_id} = {{\n"
+                mission_output += f"        position = {position}\n"
+                mission_output += f"        icon = {picture}\n"
+                for i in other_list[position][slot].split("\n"):
+                    mission_output += f"        {i}\n"
+                mission_output += f"        trigger = {{\n"
+                for i in trigger_list[position][slot].split("\n"):
+                    if not empty(i):
+                        mission_output += f"            {i}\n"
+                mission_output += f"        }}\n"
+                mission_output += f"        effect = {{\n"
+                for i in effect_list[position][slot].split("\n"):
+                    if not empty(i):
+                        mission_output += f"            {i}\n"
+                mission_output += f"        }}\n"
+                mission_output += f"    }}\n"
+                
+                # Replace <> instances
+                for [text, replacement] in [
+                    ["<tooltip>", f"{MISSION_CODE}_{mission_id}_tt"]
+                ]:
+                    mission_output = mission_output.replace(text, replacement)
+                
+                # loc_output
+                loc_output += f" {mission_id}_title:0 \"{name}\"\n"
+                loc_output += f" {mission_id}_desc:0 \""
+                for i in desc:
+                    if not empty(i):
+                        loc_output += f"{i}\\n"
+                loc_output = loc_output[:-2]
+                loc_output += f"\"\n"
+                #print("tt_list", tt_list)
+                curr_tt = tt_list[position][slot].split("\n")
+                #print("curr_tt", curr_tt)
+                for i in range(len(curr_tt)):
+                    if not empty(curr_tt[i]):
+                        loc_output += f" {MISSION_CODE}_{mission_id}_tt{i+1}:0 \"{curr_tt[i]}\"\n"
+                    
+        mission_output += f"}}\n"
+    
+    #print("\nmission_output\n", mission_output)
+    #print("\nloc_output\n", loc_output)
+    
+     # Write mission file
+    file.write(f"{const_dict['mod_files_location']}/{const_dict['mod_name']}/missions/{MISSION_CODE}_missions.txt", mission_output)
+    
+     # Write loc file
+    file.write(f"{const_dict['mod_files_location']}/{const_dict['mod_name']}/localisation/{MISSION_CODE}_missions_l_english.yml", loc_output, "utf-8-sig")
     return
 
 def main() -> None:
@@ -260,6 +360,7 @@ def main() -> None:
     
     update_events(CONSTS)
     update_modifiers(CONSTS)
+    #update_missions(CONSTS)
     return
 
 if __name__ == "__main__":

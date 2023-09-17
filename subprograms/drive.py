@@ -17,9 +17,12 @@ def download_file(file_id: str, destination: str) -> None:
     file_id should be the Google Drive ID of the folder.\n
     destination should be a valid folder.
     '''
-    file_name = gdown.download(f"https://drive.google.com/uc?/export=download&id={file_id}", quiet=True)
-    #print(f"Loaded {file_name}")
-    move(file_name, f"{destination}/{file_name}")
+    print(f"Next file: {file_id}")
+    #file_name = gdown.download(f"https://drive.google.com/uc?/export=download&id={file_id}", quiet=True)
+    file_name = gdown.download(f"https://drive.google.com/uc?id={file_id}", quiet=True)
+    print(f"Loaded {file_name}")
+    if file_name != None:
+        move(file_name, f"{destination}/{file_name}")
     return
 
 def download_folder(folder_id: str, folder_name: str, destination: str) -> None:
@@ -71,6 +74,7 @@ def download_contents(folder_id: str, destination: str, scopes: list, token_loca
         while pageToken is not None:
             response = service.files().list(q=f"'{folder_id}' in parents", pageSize=1000, pageToken=pageToken, fields="nextPageToken, files(id, name)").execute()
             curr_file = response.get('files', [])
+            print("file list", curr_file)
             pageToken = response.get("nextPageToken")
             if type(curr_file) == list:
                 for i in curr_file:

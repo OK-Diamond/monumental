@@ -51,6 +51,7 @@ def move(source: str, destination: str) -> None:
     '''
     Moves a file from source to destination.
     '''
+    print("Move", source, destination)
     test_folder(destination)
     shutil.move(source, destination)
     return

@@ -6,7 +6,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build # pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 from googleapiclient.errors import HttpError
 
-def retrieve_range_with_index(spreadsheet_id: str, range_name: str, scopes: list, token_location: str, credentials_location: str) -> list[list[list[str]], dict[str, int]]:
+def retrieve_range_with_index(spreadsheet_id: str, range_name: str, scopes: list, token_location: str, credentials_location: str, remove_str_list: list = []) -> list[list[list[str]], dict[str, int]]:
     '''
     Identical to retrieve_range, except it also creates an index of the location of all data on the first row (which is assumed to be the header row). The first row is not removed.
     '''
@@ -14,6 +14,11 @@ def retrieve_range_with_index(spreadsheet_id: str, range_name: str, scopes: list
     index: dict[str, int] = {}
     for i in range_list[0]: # Populate index
         index[i] = range_list[0].index(i)
+    if remove_str_list != []:
+        for i in range(len(range_list)):
+            for j in range(len(range_list[i])):
+                for k in remove_str_list:
+                    range_list[i][j] = range_list[i][j].replace(k, "")
     return [range_list, index]
 
 def retrieve_range(spreadsheet_id: str, range_name: str, scopes: list, token_location: str, credentials_location: str) -> list[list[str]]:

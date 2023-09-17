@@ -6,6 +6,14 @@ import subprograms.file_edit as file
 import subprograms.drive as drive
 from os import replace, remove
 
+def create_id_from_name(name: str) -> str:
+    name_id = unidecode(name).lower()
+    for i in [" ", "-"]:
+        name_id = name_id.replace(i, "_")
+    for i in ["'", ".", "/", "\\", "\"", "\'"]:
+        name_id = name_id.replace(i, "")
+    return name_id
+
 class monument:
     def __init__(self, info: list[str], index: dict[str, int]) -> None:
         for row in range(len(info)):
@@ -225,7 +233,9 @@ def empty(a: str|list) -> bool:
                 if not empty(i):
                     return False
             return True
-    return len(a) == 0 or a in ["-", "0", " ", "."]
+    elif a == None:
+        return False
+    return len(a) == 0 or a in ["-", "0", " ", ".", "_"]
 
 def batch_copy(source_folder: str, dest_folder: str, files: str|list) -> None:
     if type(files) == str:
@@ -246,7 +256,7 @@ def main() -> None:
     TOKEN_LOCATION = f"subprograms/data/token.json"
     CREDENTIALS_LOCATION = f"subprograms/data/credentials.json"
     SHEETS_ID = "1jEof6L1EutUBgaS1NVqQaAPMekN0I3ogTC1ygvQTuiM"
-    IMAGE_FOLDER_ID = "15xGaE1d6v9yxBXo8Fl1haA2f1MY-ttIE"
+    IMAGE_FOLDER_ID = "1BgC2T2LIXUMP2By_sCdBH1MeLlnfUOcs"
 
      # Don't mess with these:
     IMAGE_DEST_LOCATION = "temp"
