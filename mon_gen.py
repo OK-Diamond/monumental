@@ -120,32 +120,32 @@ class monument:
         output +=           f"""		months = 0\n"""
         output +=           f"""	}}\n"""
         output +=           f"""	build_cost = 0\n"""
-        output +=       f"""	can_be_moved = {self.movable}\n"""
+        output +=           f"""	can_be_moved = {self.movable}\n"""
         output +=           f"""	move_days_per_unit_distance = 10\n"""
-        output +=       f"""	starting_tier = {self.starting_tier}\n"""        
+        output +=           f"""	starting_tier = {self.starting_tier}\n"""        
         output +=           f"""	type = monument\n"""
         
         
-        output +=       f"""	build_trigger = {{\n"""
+        output +=           f"""	build_trigger = {{\n"""
         for i in self.requirements:
             if not empty(i):
                 output +=   f"""		{i}\n"""
-        output +=       f"""	}}\n"""
+        output +=           f"""	}}\n"""
         
         output +=           f"""	on_built = {{}}\n"""
         output +=           f"""	on_destroyed = {{}}\n"""
         
-        output +=       f"""	can_use_modifiers_trigger = {{\n"""
+        output +=           f"""	can_use_modifiers_trigger = {{\n"""
         for i in self.requirements:
             if not empty(i):
                 output +=   f"""		{i}\n"""
-        output +=       f"""	}}\n"""
+        output +=           f"""	}}\n"""
         
-        output +=       f"""	can_upgrade_trigger = {{\n"""
+        output +=           f"""	can_upgrade_trigger = {{\n"""
         for i in self.requirements:
             if not empty(i):
                 output +=   f"""		{i}\n"""
-        output +=       f"""	}}\n"""
+        output +=           f"""	}}\n"""
         
         output +=           f"""	keep_trigger = {{}}\n"""
         
@@ -164,13 +164,13 @@ class monument:
         output +=           f"""	}}\n"""
         
         for [tier, time, cost] in [[1, 120, 1000], [2, 240, 2500], [3, 480, 5000]]:
-            output +=           f"""	tier_{tier} = {{\n"""
-            output +=           f"""		upgrade_time = {{\n"""
-            output +=           f"""			months = {time}\n"""
-            output +=           f"""		}}\n"""
-            output +=           f"""		cost_to_upgrade = {{\n"""
-            output +=           f"""			factor = {cost}\n"""
-            output +=           f"""		}}\n"""
+            output +=       f"""	tier_{tier} = {{\n"""
+            output +=       f"""		upgrade_time = {{\n"""
+            output +=       f"""			months = {time}\n"""
+            output +=       f"""		}}\n"""
+            output +=       f"""		cost_to_upgrade = {{\n"""
+            output +=       f"""			factor = {cost}\n"""
+            output +=       f"""		}}\n"""
             
             for [category, modifier, force_show] in [
                 ["province",    "province_modifiers"  , True ], 
