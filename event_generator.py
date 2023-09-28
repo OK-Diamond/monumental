@@ -19,7 +19,7 @@ class hop_god:
         }
         return
     
-    def build_event(self, namespace: str, picture: str = "NORSE_TEMPLE_eventPicture") -> str:
+    def build_event(self, namespace: str, picture: str) -> str:
         MEAN_TIME = 6
         COOLDOWN = 365*10
         COOLDOWN_STAB_MULTIPLIER = 0.7
@@ -123,7 +123,7 @@ class hop_god:
                 for i in effect:
                     output +=	f"""        {i}\n"""
                 output = output.replace("<effect_level>", str(level))
-                output +=				f"""    }}\n"""
+                output +=		f"""    }}\n"""
         output +=				f"""}}\n"""
         for [text, replacement] in [
             ["<number>", str(self.number)], 
@@ -133,8 +133,9 @@ class hop_god:
         return output
     
     def build_loc(self, namespace: str) -> str:
-        output = f""" {namespace}.{self.number}.title:0 \"Blessing of {self.name}\"
- {namespace}.{self.number}.desc:0 \"The {self.monument['name']} has attracted the favour of {self.name}, {self.desc}.\"\n"""
+        output = ""
+        output += f" {namespace}.{self.number}.title:0 \"Blessing of {self.name}\"\n"
+        output += f" {namespace}.{self.number}.desc:0 \"The {self.monument['name']} has attracted the favour of {self.name}, {self.desc}.\"\n"
         if not empty(self.tooltip):
             for i in range(len(self.tooltip)):
                 output += f""" {namespace}.{self.number}.tt{i+1}_1:0 \"{self.tooltip[i]}\"\n"""
@@ -165,21 +166,88 @@ class hop:
         #print("loc", output)
         return output
 
-class mnd:
-    def __init__(self) -> None:
-        return
-
 def update_events(const_dict: dict) -> None:
     NAMESPACE = f"{const_dict['mod_id']}_mon_events"
+    EVENT_SHEET_ID = "1STk5w69_RLVxANKPXOg9YSLmZvqtrF2sWsp9e-n2fm8"
     
-    event_list = []
+    event_output = ""
+    loc_output = ""
+    event_count = 0
+    
+     # Events
+    event_list, event_index =   sheets.retrieve_range_with_index(EVENT_SHEET_ID, "events",  const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    option_list, option_index = sheets.retrieve_range_with_index(EVENT_SHEET_ID, "options", const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    for row in event_list[1:]:
+        #print(event_index)
+        if not empty(row[event_index["name"]]) and row[event_index["enable"]] == "TRUE":
+            event_count += 1
+             # Event
+            event_output +=                 f"{row[event_index['type']]}_event = {{\n"
+            event_output +=                 f"    id = {NAMESPACE}.{row[event_index['id']]}\n"
+            event_output +=                 f"    title = {NAMESPACE}.{row[event_index['id']]}.title\n"
+            event_output +=                 f"    desc = {NAMESPACE}.{row[event_index['id']]}.desc\n"
+            if not empty(row[event_index["image"]]):
+                event_output +=             f"    picture = {row[event_index['image']]}\n"
+            else:
+                event_output +=             f"    picture = BIG_BOOK_eventPicture\n"
+            event_output +=                 f"    mean_time_to_happen = {{months = {row[event_index['mtth']]}}}\n"
+            event_output +=                 f"    trigger = {{\n"
+            for i in row[event_index["trigger"]].split("\n"):
+                if not empty(i):
+                    event_output +=         f"        {i}\n"
+            event_output +=                 f"    }}\n"
+             # loc
+            loc_output += f" {NAMESPACE}.{row[event_index['id']]}.title:0 \"{row[event_index['name']]}\"\n"
+            loc_output += f" {NAMESPACE}.{row[event_index['id']]}.desc:0 \"{row[event_index['desc']]}\"\n"
+            tt = row[event_index["tooltip"]].split("\n")
+            for i in range(len(tt)):
+                if not empty(tt[i]):
+                    loc_output += f" {NAMESPACE}.{row[event_index['id']]}.tt_e{event_count}_{i+1}:0 \"{tt[i]}\"\n"
+            option_count = 0
+            for option in option_list[1:]:
+                if option[option_index["linked_event"]] == row[event_index["id"]] and not empty(option[option_index["name"]]):
+                    option_count += 1
+                     # Option event
+                    event_output +=         f"    option = {{\n"
+                    event_output +=         f"        name = {NAMESPACE}.{row[event_index['id']]}.o{option_count}\n"
+                    event_output +=         f"        trigger = {{\n"
+                    for i in option[option_index["trigger"]].split("\n"):
+                        if not empty(i):
+                            event_output += f"            {i}\n"
+                    event_output +=         f"        }}\n"
+                    event_output +=         f"        ai_chance = {{\n"
+                    for i in option[option_index["ai"]].split("\n"):
+                        if not empty(i):
+                            event_output += f"            {i}\n"
+                    event_output +=         f"        }}\n"
+                    for i in option[option_index["effect"]].split("\n"):
+                        if not empty(i):
+                            event_output += f"        {i}\n"
+                    event_output +=         f"    }}\n"
+                     # Option loc
+                    loc_output += f" {NAMESPACE}.{row[event_index['id']]}.o{option_count}:0 \"{option[option_index['name']]}\"\n"
+                    tt = option[option_index["tooltip"]].split("\n")
+                    for i in range(len(tt)):
+                        if not empty(tt[i]):
+                            loc_output += f" {NAMESPACE}.{row[event_index['id']]}.tt_o{option_count}_{i+1}:0 \"{tt[i]}\"\n"
+                    for [text, replacement] in [
+                        ["<o_tt>", f"{NAMESPACE}.{row[event_index['id']]}.tt_o{option_count}_"]
+                    ]:
+                        event_output = event_output.replace(text, replacement)
+            for [text, replacement] in [
+                ["<e_tt>", f"{NAMESPACE}.{row[event_index['id']]}.tt_e{event_count}_"]
+            ]:
+                event_output = event_output.replace(text, replacement)
+            event_output +=                 f"}}\n"
+    
+    
     
      # Hall of Pantheons events
+    hop_event_list = []
     hall_of_pantheons = hop(NAMESPACE)
-    god_counter = 0
     range_list, index = sheets.retrieve_range_with_index(const_dict['sheets_id'], "pantheon", const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'])
     for row in range_list[1:]:
-        if not empty(row[index["effect"]]) and row[index["enabled"]] == "TRUE":
+        if not empty(row[index["effect"]]) and row[index["enable"]] == "TRUE":
             for [name, desc, religion] in [
                 ["hellenic_name", "hellenic_desc", "hellenic"], 
                 ["punic_name", "punic_desc", "punic_religion"], 
@@ -187,7 +255,7 @@ def update_events(const_dict: dict) -> None:
                 ["norse_name", "norse_desc", "norse_pagan_reformed"]
             ]:
                 if not empty(row[index[name]]) and not empty(row[index[desc]]):
-                    god_counter += 1
+                    event_count += 1
                     god = hop_god(
                             row[index[name]], 
                             row[index[desc]], 
@@ -196,22 +264,22 @@ def update_events(const_dict: dict) -> None:
                             row[index["tooltip"]], 
                             row[index["tooltip2"]], 
                             religion, 
-                            god_counter
+                            event_count
                         )
                     hall_of_pantheons.append_to_god_list(god)
-    event_list.append(hall_of_pantheons)
+    hop_event_list.append(hall_of_pantheons)
     
     
      # Write events file
-    events_scipt = f"namespace = {NAMESPACE}\n\n"
-    for event_id in range(len(event_list)):
-        events_scipt += event_list[event_id].build_event()
+    events_scipt = f"namespace = {NAMESPACE}\n\n{event_output}"
+    for event_id in range(len(hop_event_list)):
+        events_scipt += hop_event_list[event_id].build_event()
     file.write(f"{const_dict['mod_files_location']}/{const_dict['mod_name']}/events/{const_dict['mod_id']}_mon_events.txt", events_scipt)
     
      # Write loc file
-    loc_script = "l_english:\n"
-    for event_id in range(len(event_list)):
-        loc_script += event_list[event_id].build_loc()
+    loc_script = f"l_english:\n{loc_output}"
+    for event_id in range(len(hop_event_list)):
+        loc_script += hop_event_list[event_id].build_loc()
     file.write(f"{const_dict['mod_files_location']}/{const_dict['mod_name']}/localisation/{const_dict['mod_id']}_mon_events_l_english.yml", loc_script, "utf-8-sig")
     
     return
@@ -224,7 +292,7 @@ def update_modifiers(const_dict: dict) -> None:
     #print("modifiers\n", range_list)
     for row in range_list[1:]:
         effects = row[index["effect"]].replace("\r", "").split("\n")
-        if not empty(row[index["effect"]]) and row[index["enabled"]] == "TRUE":
+        if not empty(row[index["effect"]]) and row[index["enable"]] == "TRUE":
              # modifier_output
             modifier_output += f"{row[index['id']]} = {{\n"
             for effect in effects:
@@ -348,7 +416,7 @@ def main() -> None:
     CONSTS = {
         "mod_name": "post_finem", 
         "mod_id": "pf", 
-        "mod_files_location": "C:/Users/Oliver Kirk/Documents/Paradox Interactive/Europa Universalis IV/mod", 
+        "mod_files_location": "C:/Users/okthe/OneDrive/Documents/Paradox Interactive/Europa Universalis IV/mod", 
         #"mod_files_location": "mod_files", 
         "scopes": ["https://www.googleapis.com/auth/drive.readonly", "https://www.googleapis.com/auth/spreadsheets.readonly"], 
         "token_location": f"subprograms/data/token.json", 

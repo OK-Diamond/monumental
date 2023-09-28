@@ -9,7 +9,7 @@ def merge(monument: pil.Image, frame: pil.Image) -> pil.Image:
     return merged_image
 
 def main(input_location: str, output_location: str, output_file_type = "dds") -> None:
-    template = pil.open(f"{input_location}template.dds")
+    template = pil.open(f"{input_location}template.png")
     for i in listdir(f"{input_location}input"):
         #print("i", i)
         monument = pil.open(f"{input_location}input\\{i}")
@@ -33,4 +33,4 @@ def main(input_location: str, output_location: str, output_file_type = "dds") ->
     template.close()
 
 if __name__ == "__main__":
-    main("", "output\\", "dds")
+    main("", "output\\", "png")

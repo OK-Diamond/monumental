@@ -18,7 +18,7 @@ class monument:
     def __init__(self, info: list[str], index: dict[str, int]) -> None:
         for row in range(len(info)):
             info[row] = info[row].replace("\r", "")
-        print("info", info)
+        #print("info", info)
         self.name = info[index["name"]]
         self.id = unidecode(info[index["name"]]).lower()
         for i in [" ", "-"]:
@@ -26,7 +26,7 @@ class monument:
         for i in ["'", ".", "/", "\\", "\"", "\'"]:
             self.id = self.id.replace(i, "")
         self.code = info[index["code"]]
-        print(self.name, self.id, self.code)
+        #print(self.name, self.id, self.code)
         self.province_id = info[index["prov_id"]]
         self.description = info[index["description"]].replace("\n", "\\n").replace("\"", "\\\"")
         self.artist = info[index["artist"]].replace("\n", "\\n").replace("\"", "\\\"")
@@ -40,9 +40,9 @@ class monument:
             self.movable = "no"
         
         self.modifiers: dict[str, dict[str, list[str]]] = {
-            1: {"province": [], "area": [], "region": [], "country": [], "upgrade": [], "conditional": [], "other": []}, 
-            2: {"province": [], "area": [], "region": [], "country": [], "upgrade": [], "conditional": [], "other": []}, 
-            3: {"province": [], "area": [], "region": [], "country": [], "upgrade": [], "conditional": [], "other": []}
+            1: {"province": [], "area": [], "region": [], "country": [], "conditional": [], "upgrade": [], "other": []}, 
+            2: {"province": [], "area": [], "region": [], "country": [], "conditional": [], "upgrade": [], "other": []}, 
+            3: {"province": [], "area": [], "region": [], "country": [], "conditional": [], "upgrade": [], "other": []}
         }
         for [tier, data] in [[1, info[index["tier_1"]]], [2, info[index["tier_2"]]], [3, info[index["tier_3"]]]]:
             tier: int
@@ -53,14 +53,14 @@ class monument:
                     self.modifiers[tier]["other"] = self.modifiers[tier]["province"][i+1:]
                     self.modifiers[tier]["province"] = self.modifiers[tier]["province"][:i]
                     break
-            for i in range(len(self.modifiers[tier]["province"])): # Conditional Modifier
-                if "---conditional---" in self.modifiers[tier]["province"][i]:
-                    self.modifiers[tier]["conditional"] = self.modifiers[tier]["province"][i+1:]
-                    self.modifiers[tier]["province"] = self.modifiers[tier]["province"][:i]
-                    break
             for i in range(len(self.modifiers[tier]["province"])): # Upgrade
                 if "---upgrade---" in self.modifiers[tier]["province"][i]:
                     self.modifiers[tier]["upgrade"] = self.modifiers[tier]["province"][i+1:]
+                    self.modifiers[tier]["province"] = self.modifiers[tier]["province"][:i]
+                    break
+            for i in range(len(self.modifiers[tier]["province"])): # Conditional Modifier
+                if "---conditional---" in self.modifiers[tier]["province"][i]:
+                    self.modifiers[tier]["conditional"] = self.modifiers[tier]["province"][i+1:]
                     self.modifiers[tier]["province"] = self.modifiers[tier]["province"][:i]
                     break
             for i in range(len(self.modifiers[tier]["province"])): # Country
@@ -114,89 +114,79 @@ class monument:
 
     def build_monument(self) -> str:
         output  =           f"""{self.id} = {{ # {self.code}\n"""
-        output +=           f"""	start = {self.province_id}\n"""
-        output +=           f"""	date = 1.01.01\n"""
-        output +=           f"""	time = {{\n"""
-        output +=           f"""		months = 0\n"""
-        output +=           f"""	}}\n"""
-        output +=           f"""	build_cost = 0\n"""
-        output +=           f"""	can_be_moved = {self.movable}\n"""
-        output +=           f"""	move_days_per_unit_distance = 10\n"""
-        output +=           f"""	starting_tier = {self.starting_tier}\n"""        
-        output +=           f"""	type = monument\n"""
+        output +=           f"""    start = {self.province_id}\n"""
+        output +=           f"""    date = 1.01.01\n"""
+        output +=           f"""    time = {{months = 0}}\n"""
+        output +=           f"""    build_cost = 0\n"""
+        output +=           f"""    can_be_moved = {self.movable}\n"""
+        output +=           f"""    move_days_per_unit_distance = 10\n"""
+        output +=           f"""    starting_tier = {self.starting_tier}\n"""        
+        output +=           f"""    type = monument\n"""
         
         
-        output +=           f"""	build_trigger = {{\n"""
+        output +=           f"""    build_trigger = {{\n"""
         for i in self.requirements:
             if not empty(i):
-                output +=   f"""		{i}\n"""
-        output +=           f"""	}}\n"""
+                output +=   f"""        {i}\n"""
+        output +=           f"""    }}\n"""
         
-        output +=           f"""	on_built = {{}}\n"""
-        output +=           f"""	on_destroyed = {{}}\n"""
+        output +=           f"""    on_built = {{}}\n"""
+        output +=           f"""    on_destroyed = {{}}\n"""
         
-        output +=           f"""	can_use_modifiers_trigger = {{\n"""
+        output +=           f"""    can_use_modifiers_trigger = {{\n"""
         for i in self.requirements:
             if not empty(i):
-                output +=   f"""		{i}\n"""
-        output +=           f"""	}}\n"""
+                output +=   f"""        {i}\n"""
+        output +=           f"""    }}\n"""
         
-        output +=           f"""	can_upgrade_trigger = {{\n"""
+        output +=           f"""    can_upgrade_trigger = {{\n"""
         for i in self.requirements:
             if not empty(i):
-                output +=   f"""		{i}\n"""
-        output +=           f"""	}}\n"""
+                output +=   f"""        {i}\n"""
+        output +=           f"""    }}\n"""
         
-        output +=           f"""	keep_trigger = {{}}\n"""
+        output +=           f"""    keep_trigger = {{}}\n"""
         
         
-        output +=           f"""	tier_0 = {{\n"""
-        output +=           f"""		upgrade_time = {{\n"""
-        output +=           f"""			months = 0\n"""
-        output +=           f"""		}}\n"""
-        output +=           f"""		cost_to_upgrade = {{\n"""
-        output +=           f"""			factor = 0\n"""
-        output +=           f"""		}}\n"""
-        output +=           f"""		province_modifiers = {{}}\n"""
-        output +=           f"""		area_modifier = {{}}\n"""
-        output +=           f"""		country_modifiers = {{}}\n"""
-        output +=           f"""		on_upgraded = {{}}\n"""
-        output +=           f"""	}}\n"""
+        output +=           f"""    tier_0 = {{\n"""
+        output +=           f"""        upgrade_time = {{months = 0}}\n"""
+        output +=           f"""        cost_to_upgrade = {{factor = 0}}\n"""
+        output +=           f"""        province_modifiers = {{}}\n"""
+        output +=           f"""        area_modifier = {{}}\n"""
+        output +=           f"""        country_modifiers = {{}}\n"""
+        output +=           f"""    }}\n"""
         
         for [tier, time, cost] in [[1, 120, 1000], [2, 240, 2500], [3, 480, 5000]]:
-            output +=       f"""	tier_{tier} = {{\n"""
-            output +=       f"""		upgrade_time = {{\n"""
-            output +=       f"""			months = {time}\n"""
-            output +=       f"""		}}\n"""
-            output +=       f"""		cost_to_upgrade = {{\n"""
-            output +=       f"""			factor = {cost}\n"""
-            output +=       f"""		}}\n"""
+            output +=       f"""    tier_{tier} = {{\n"""
+            output +=       f"""        upgrade_time = {{months = {time}}}\n"""
+            output +=       f"""        cost_to_upgrade = {{factor = {cost}}}\n"""
             
             for [category, modifier, force_show] in [
                 ["province",    "province_modifiers"  , True ], 
                 ["area",        "area_modifier"       , True ], 
                 ["region",      "region_modifier"     , False], 
                 ["country",     "country_modifiers"   , True ], 
-                ["upgrade",     "on_upgraded"         , False], 
-                ["conditional", "conditional_modifier", False]
+                ["conditional", "conditional_modifier", False], 
+                ["upgrade",     "on_upgraded"         , False]
             ]:
                 tier_data, is_empty = self.get_tier_data(tier, category)
-                if force_show or not is_empty:
-                    output +=       f"""		{modifier} = {{\n"""
-                    #print("tier", tier_data)
+                #print("tier", tier_data)
+                if force_show and is_empty:
+                    output +=         f"""        {modifier} = {{}}\n"""
+                if not is_empty:
+                    output +=         f"""        {modifier} = {{\n"""
                     for row in tier_data:
                         if not empty(row):
-                            #print("row", row)
-                            output +=   f"""			{row}\n"""
-                    output +=       f"""		}}\n"""
+                            output += f"""            {row}\n"""
+                    output +=         f"""        }}\n"""
             
             tier_data, is_empty = self.get_tier_data(tier, "other")
             if not is_empty:
                 for row in tier_data:
                         if not empty(row):
-                            output +=   f"""		{row}\n"""
+                            output +=   f"""        {row}\n"""
             
-            output +=           f"""	}}\n"""
+            output +=           f"""    }}\n"""
                 
         output +=           f"""}}\n"""
         return output
@@ -249,7 +239,7 @@ def main() -> None:
      # Things to mess with:
     MOD_NAME = "post_finem" # Please avoid spaces, punctuation, special characters, etc. as they could lead to unexpected results.
     MOD_ID = "pf" # as above
-    MOD_FILES_LOCATION = "C:/Users/Oliver Kirk/Documents/Paradox Interactive/Europa Universalis IV/mod"
+    MOD_FILES_LOCATION = "C:/Users/okthe/OneDrive/Documents/Paradox Interactive/Europa Universalis IV/mod"
     #MOD_FILES_LOCATION = "mod_files"
     SOURCE_FILES_LOCATION = "source_files"
     SCOPES = ["https://www.googleapis.com/auth/drive.readonly", "https://www.googleapis.com/auth/spreadsheets.readonly"]
@@ -269,7 +259,8 @@ def main() -> None:
     mon_list: list[monument] = []
     range_list, index = sheets.retrieve_range_with_index(SHEETS_ID, "monument_list", SCOPES, TOKEN_LOCATION, CREDENTIALS_LOCATION) # Process monuments
     for i in range_list[1:]:
-        mon_list.append(monument(i, index))
+        if not (empty(i[index["name"]]) or empty(i[index["code"]]) or empty(i[index["prov_id"]])):
+            mon_list.append(monument(i, index))
 
     print(f"common/great_projects/{FILE_NAMES['common']}")
     config = ""
@@ -284,6 +275,7 @@ def main() -> None:
         localisation += mon.build_localisation()
     file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/localisation/{FILE_NAMES['localisation']}", localisation, "utf-8-sig")
     
+    '''
     print("gfx/interface/great_projects   image files")
     input("Press enter to continue")
     file.test_folder(IMAGE_DEST_LOCATION, False)
@@ -310,16 +302,17 @@ def main() -> None:
                     f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}", 
                     f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/great_project_{j.get_id()}.{image_file_type}"
                 )
-                gfx_str += f"""	spriteType = {{\n"""
-                gfx_str += f"""		name = "GFX_great_project_{j.get_id()}"\n"""
-                gfx_str += f"""		texturefile = "gfx//interface//great_projects//great_project_{j.get_id()}.{image_file_type}"\n"""
-                gfx_str += f"""	}}\n"""
+                gfx_str += f"""    spriteType = {{\n"""
+                gfx_str += f"""        name = "GFX_great_project_{j.get_id()}"\n"""
+                gfx_str += f"""        texturefile = "gfx//interface//great_projects//great_project_{j.get_id()}.{image_file_type}"\n"""
+                gfx_str += f"""    }}\n"""
         if not found_monument and i[0] in ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]: # Second part is to prevent already valid images from being removed.
             remove(f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}")
-            #print("MONUMENT REMOVED", f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}")
+            print("IMAGE REMOVED", f"{MOD_FILES_LOCATION}/{MOD_NAME}/gfx/interface/great_projects/{i}")
     gfx_str += "}"
     file.write(f"{MOD_FILES_LOCATION}/{MOD_NAME}/interface/{FILE_NAMES['interface']}", gfx_str)
     file.delete(IMAGE_DEST_LOCATION)
+    '''
     return
     
 if __name__ == "__main__":

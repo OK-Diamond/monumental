@@ -8,7 +8,7 @@ def _merge(monument: pil.Image, frame: pil.Image) -> pil.Image:
     return merged_image
 
 def main(input_location: str, output_location: str, template_location: str, output_file_type = "dds") -> None:
-    template = pil.open(f"{template_location}/template.dds")
+    template = pil.open(f"{template_location}/template.png")
     for i in listdir(input_location):
         monument = pil.open(f"{input_location}/{i}")
         if monument.width < monument.height*2:
