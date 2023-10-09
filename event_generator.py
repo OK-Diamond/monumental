@@ -186,11 +186,17 @@ def update_events(const_dict: dict) -> None:
             event_output +=                 f"    id = {NAMESPACE}.{row[event_index['id']]}\n"
             event_output +=                 f"    title = {NAMESPACE}.{row[event_index['id']]}.title\n"
             event_output +=                 f"    desc = {NAMESPACE}.{row[event_index['id']]}.desc\n"
+            
             if not empty(row[event_index["image"]]):
                 event_output +=             f"    picture = {row[event_index['image']]}\n"
             else:
                 event_output +=             f"    picture = BIG_BOOK_eventPicture\n"
-            event_output +=                 f"    mean_time_to_happen = {{months = {row[event_index['mtth']]}}}\n"
+                
+            if empty(row[event_index['mtth']]):
+                event_output +=             f"    is_triggered_only = yes\n"
+            else:
+                event_output +=             f"    mean_time_to_happen = {{months = {row[event_index['mtth']]}}}\n"
+                
             event_output +=                 f"    trigger = {{\n"
             for i in row[event_index["trigger"]].split("\n"):
                 if not empty(i):
@@ -329,9 +335,10 @@ def update_missions(const_dict: dict) -> None:
     tt_list,      _           = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "mission_tooltip", const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
     other_list,   _           = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "mission_other",   const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
     name_list,    _           = sheets.retrieve_range_with_index(MISSION_SHEET_ID, "mission_name",    const_dict['scopes'], const_dict['token_location'], const_dict['credentials_location'], ["\r"])
+    id_list = [["" for i in range(5)] for j in range(len(effect_list))]
     
      # branch/slot = column, position = row
-    for slot in range(4, 5):
+    for slot in range(1, 5):
         potential_list = []
         mission_output += f"{MISSION_CODE}_{slot+1} = {{\n"
         for row in branch_list[1:]:
@@ -347,25 +354,29 @@ def update_missions(const_dict: dict) -> None:
                 mission_output += f"        {i}\n"
         mission_output += f"    }}\n"
         for position in range(len(effect_list)):
-            print("name_list", name_list)
+            #print("name_list", name_list)
             print(position, slot)
             name_data = name_list[position][slot].split("\n")
-            print("name_data", name_data)
             name, picture, desc = "", "mission_unknown_mission", [""]
             if len(name_data) == 1:   name                = name_data[0] # name
             elif len(name_data) == 2: name, picture       = name_data[0], name_data[1] # name, picture
             else:                     name, picture, desc = name_data[0], name_data[1], name_data[2:] # name, picture, description
-            mission_id = f"{MISSION_CODE}_{create_id_from_name(name)}"
+            name_id = create_id_from_name(name)
+            mission_id = f"{MISSION_CODE}_{name_id}"
+            if empty(picture): picture = "mission_unknown_mission"
+            #print("name_data", name_data)
             
-            if not empty(create_id_from_name(name)):
-                print("mission_id", mission_id, type(mission_id))
-                print("name", name)
+            if not empty(name_id):
+                id_list[position][slot] = mission_id
+                #print("mission_id", mission_id, type(mission_id))
+                #print("name", name)
                 # mission_output
                 mission_output += f"    {mission_id} = {{\n"
-                mission_output += f"        position = {position}\n"
+                mission_output += f"        position = {position+1}\n"
                 mission_output += f"        icon = {picture}\n"
                 for i in other_list[position][slot].split("\n"):
-                    mission_output += f"        {i}\n"
+                    if not empty(i):
+                        mission_output += f"        {i}\n"
                 mission_output += f"        trigger = {{\n"
                 for i in trigger_list[position][slot].split("\n"):
                     if not empty(i):
@@ -378,28 +389,38 @@ def update_missions(const_dict: dict) -> None:
                 mission_output += f"        }}\n"
                 mission_output += f"    }}\n"
                 
-                # Replace <> instances
-                for [text, replacement] in [
-                    ["<tooltip>", f"{MISSION_CODE}_{mission_id}_tt"]
-                ]:
-                    mission_output = mission_output.replace(text, replacement)
-                
                 # loc_output
                 loc_output += f" {mission_id}_title:0 \"{name}\"\n"
                 loc_output += f" {mission_id}_desc:0 \""
                 for i in desc:
                     if not empty(i):
-                        loc_output += f"{i}\\n"
-                loc_output = loc_output[:-2]
+                        loc_output += f"{i}"
                 loc_output += f"\"\n"
                 #print("tt_list", tt_list)
+                #print(position, slot)
                 curr_tt = tt_list[position][slot].split("\n")
                 #print("curr_tt", curr_tt)
                 for i in range(len(curr_tt)):
                     if not empty(curr_tt[i]):
                         loc_output += f" {MISSION_CODE}_{mission_id}_tt{i+1}:0 \"{curr_tt[i]}\"\n"
+                
+                
+                # Replace <> instances
+                for [text, replacement] in [
+                    ["<tooltip>", f"{MISSION_CODE}_{mission_id}_tt"]
+                ]:
+                    mission_output = mission_output.replace(text, replacement)
+                    loc_output = loc_output.replace(text, replacement)
                     
         mission_output += f"}}\n"
+        
+    for i in id_list:
+        print(i)
+    for col in range(5):
+        for row in range(len(effect_list)):
+            print(col, row)
+            mission_output = mission_output.replace(f"<m_{col+1}_{row+1}>", id_list[row][col])
+    
     
     #print("\nmission_output\n", mission_output)
     #print("\nloc_output\n", loc_output)
@@ -428,7 +449,7 @@ def main() -> None:
     
     update_events(CONSTS)
     update_modifiers(CONSTS)
-    #update_missions(CONSTS)
+    update_missions(CONSTS)
     return
 
 if __name__ == "__main__":
