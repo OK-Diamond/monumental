@@ -225,7 +225,7 @@ def empty(a: str|list) -> bool:
             return True
     elif a == None:
         return False
-    return len(a) == 0 or a in ["-", "0", " ", ".", "_"]
+    return len(a) == 0 or a in ["-", "0", " ", ".", "_"] or a == False
 
 def batch_copy(source_folder: str, dest_folder: str, files: str|list) -> None:
     if type(files) == str:

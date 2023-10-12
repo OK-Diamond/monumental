@@ -80,6 +80,7 @@ class hop_god:
         output += f"""            }}\n"""
         output += f"""        }}\n"""
         output += f"""    }}\n\n"""
+        # Options:
         for [requirements, effect, level] in [
             [
                 [
@@ -119,6 +120,10 @@ class hop_god:
                 output +=		f"""        set_province_flag = {PROV_FLAG}\n"""
                 output +=		f"""        owner = {{\n"""
                 output +=		f"""            set_country_flag = {COUNTRY_FLAG} # Used to track blessing in other places.\n"""
+                output +=		f"""            if = {{\n"""
+                output +=		f"""                limit = {{has_country_flag = pf_dda_blessing_money}}\n"""
+                output +=		f"""                add_years_of_income = 0.25\n"""
+                output +=		f"""            }}\n"""
                 output +=		f"""        }}\n"""
                 for i in effect:
                     output +=	f"""        {i}\n"""
@@ -186,22 +191,24 @@ def update_events(const_dict: dict) -> None:
             event_output +=                 f"    id = {NAMESPACE}.{row[event_index['id']]}\n"
             event_output +=                 f"    title = {NAMESPACE}.{row[event_index['id']]}.title\n"
             event_output +=                 f"    desc = {NAMESPACE}.{row[event_index['id']]}.desc\n"
-            
             if not empty(row[event_index["image"]]):
                 event_output +=             f"    picture = {row[event_index['image']]}\n"
             else:
                 event_output +=             f"    picture = BIG_BOOK_eventPicture\n"
-                
             if empty(row[event_index['mtth']]):
                 event_output +=             f"    is_triggered_only = yes\n"
             else:
-                event_output +=             f"    mean_time_to_happen = {{months = {row[event_index['mtth']]}}}\n"
-                
-            event_output +=                 f"    trigger = {{\n"
-            for i in row[event_index["trigger"]].split("\n"):
-                if not empty(i):
-                    event_output +=         f"        {i}\n"
-            event_output +=                 f"    }}\n"
+                mtth = row[event_index["mtth"]].split("\n")
+                event_output +=             f"    mean_time_to_happen = {{\n"
+                for i in range(len(mtth)):
+                    if not empty(mtth[i]):
+                        event_output +=     f"        {mtth[i]}\n"
+                event_output +=             f"    }}\n"
+                event_output +=             f"    trigger = {{\n"
+                for i in row[event_index["trigger"]].split("\n"):
+                    if not empty(i):
+                        event_output +=     f"        {i}\n"
+                event_output +=             f"    }}\n"
              # loc
             loc_output += f" {NAMESPACE}.{row[event_index['id']]}.title:0 \"{row[event_index['name']]}\"\n"
             loc_output += f" {NAMESPACE}.{row[event_index['id']]}.desc:0 \"{row[event_index['desc']]}\"\n"
